@@ -1,3 +1,4 @@
+
 const express = require("express");
 const path = require("path");
 const https = require("https");
@@ -5,38 +6,103 @@ const http = require("http");
 
 const app = express();
 
-// Port local ou port fourni par l'hébergeur
 const PORT = process.env.PORT || 3000;
 const HOST = "0.0.0.0";
 
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
-// Fichiers du site
+// ======================================================
+// FICHIERS DU SITE
+// ======================================================
+
 app.use(express.static(__dirname));
 
-
-// ========================================
-// PAGE PRINCIPALE
-// ========================================
-
 app.get("/", (req, res) => {
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// ======================================================
+// VÉRIFICATION D'URL
+// ======================================================
 
-// ========================================
-// ANALYSER UN LIEN
-// ========================================
+function parseHttpUrl(value) {
+    try {
+        const url = new URL(value);
+
+        if (
+            url.protocol !== "http:" &&
+            url.protocol !== "https:"
+        ) {
+            return null;
+        }
+
+        return url;
+    } catch {
+        return null;
+    }
+}
+
+// ======================================================
+// DÉTECTION DE PLATEFORME
+// ======================================================
+
+function detectPlatform(url) {
+    const parsed = parseHttpUrl(url);
+
+    if (!parsed) {
+        return null;
+    }
+
+    const host = parsed.hostname
+        .toLowerCase()
+        .replace(/^www\./, "");
+
+    if (
+        host === "youtube.com" ||
+        host === "youtu.be" ||
+        host.endsWith(".youtube.com")
+    ) {
+        return "YouTube";
+    }
+
+    if (
+        host === "tiktok.com" ||
+        host.endsWith(".tiktok.com")
+    ) {
+        return "TikTok";
+    }
+
+    if (
+        host === "twitter.com" ||
+        host === "x.com" ||
+        host.endsWith(".twitter.com") ||
+        host.endsWith(".x.com")
+    ) {
+        return "X / Twitter";
+    }
+
+    if (
+        host === "snapchat.com" ||
+        host.endsWith(".snapchat.com")
+    ) {
+        return "Snapchat";
+    }
+
+    return "Lien direct";
+}
+
+// ======================================================
+// ANALYSER UN LIEN DIRECT
+// ======================================================
 
 async function getVideoInfo(url) {
-
     try {
-
         const response = await fetch(url, {
             method: "HEAD",
-            redirect: "follow"
+            redirect: "follow",
+            headers: {
+                "User-Agent": "VideoHub/1.0"
+            }
         });
 
         const contentType =
@@ -46,13 +112,13 @@ async function getVideoInfo(url) {
             response.headers.get("content-length") || null;
 
         return {
-            success: true,
-            contentType: contentType,
-            contentLength: contentLength
+            success: response.ok,
+            contentType,
+            contentLength,
+            status: response.status
         };
 
     } catch (error) {
-
         console.log(
             "Erreur analyse lien :",
             error.message
@@ -60,268 +126,243 @@ async function getVideoInfo(url) {
 
         return {
             success: false,
-            message:
-                "Impossible de vérifier le fichier."
+            message: "Impossible de vérifier le fichier."
         };
-
     }
 }
 
+// ======================================================
+// API ANALYSE
+// ======================================================
 
 app.post("/api/analyze", async (req, res) => {
 
-    const url = req.body.url;
+    const url = req.body?.url;
 
     if (!url) {
-
         return res.json({
             success: false,
             message: "Aucun lien fourni."
         });
-
     }
 
-    let platform = null;
-    let info = null;
+    const parsedUrl = parseHttpUrl(url);
 
-    try {
-
-        const link = new URL(url);
-
-        const host =
-            link.hostname
-                .toLowerCase()
-                .replace(/^www\./, "");
-
-
-        // YouTube
-        if (
-            host === "youtube.com" ||
-            host === "youtu.be" ||
-            host.endsWith(".youtube.com")
-        ) {
-
-            platform = "YouTube";
-
-        }
-
-        // TikTok
-        else if (
-            host === "tiktok.com" ||
-            host.endsWith(".tiktok.com")
-        ) {
-
-            platform = "TikTok";
-
-        }
-
-        // X / Twitter
-        else if (
-            host === "twitter.com" ||
-            host === "x.com" ||
-            host.endsWith(".twitter.com") ||
-            host.endsWith(".x.com")
-        ) {
-
-            platform = "X / Twitter";
-
-        }
-
-        // Snapchat
-        else if (
-            host === "snapchat.com" ||
-            host.endsWith(".snapchat.com")
-        ) {
-
-            platform = "Snapchat";
-
-        }
-
-        // Lien vidéo direct
-        else {
-
-            info = await getVideoInfo(url);
-
-            platform = "Lien direct";
-
-        }
-
-
-    } catch (error) {
-
+    if (!parsedUrl) {
         return res.json({
             success: false,
             message: "Lien invalide."
         });
-
     }
 
+    const platform = detectPlatform(url);
+
+    let info = null;
+
+    // Pour les liens directs, on vérifie le fichier.
+    if (platform === "Lien direct") {
+        info = await getVideoInfo(url);
+    }
 
     console.log(
         `Plateforme détectée : ${platform}`
     );
 
-
-    res.json({
-
+    return res.json({
         success: true,
-
-        platform: platform,
-
-        contentType:
-            info
-                ? info.contentType
-                : null,
-
-        contentLength:
-            info
-                ? info.contentLength
-                : null
-
+        platform,
+        contentType: info
+            ? info.contentType
+            : null,
+        contentLength: info
+            ? info.contentLength
+            : null
     });
-
 });
 
+// ======================================================
+// NOM DE FICHIER SÉCURISÉ
+// ======================================================
 
-// ========================================
-// TÉLÉCHARGEMENT D'UN LIEN DIRECT
-// ========================================
-
-app.get("/api/download-url", (req, res) => {
-
-    const url = req.query.url;
-
-    if (!url) {
-
-        return res.status(400).send(
-            "Lien manquant."
-        );
-
-    }
-
-
-    let parsedUrl;
+function getSafeFilename(url, contentType) {
 
     try {
+        const parsed = new URL(url);
 
-        parsedUrl = new URL(url);
+        let filename = path.basename(
+            decodeURIComponent(parsed.pathname)
+        );
+
+        filename = filename
+            .replace(/[<>:"/\\|?*\x00-\x1F]/g, "")
+            .trim();
+
+        if (!filename || filename === ".") {
+            filename = "VideoHub-video";
+        }
+
+        // Si aucun nom ne possède d'extension,
+        // on peut en ajouter une selon le type.
+        if (!filename.includes(".")) {
+
+            if (contentType.includes("mp4")) {
+                filename += ".mp4";
+            } else if (contentType.includes("webm")) {
+                filename += ".webm";
+            } else if (contentType.includes("mpeg")) {
+                filename += ".mp3";
+            }
+        }
+
+        return filename;
 
     } catch {
+        return "VideoHub-video";
+    }
+}
 
+// ======================================================
+// TÉLÉCHARGEMENT PAR HTTP/HTTPS
+// ======================================================
+
+function downloadDirectFile(url, res, redirectCount = 0) {
+
+    // Protection contre les redirections infinies.
+    if (redirectCount > 5) {
+        return res.status(400).send(
+            "Trop de redirections."
+        );
+    }
+
+    const parsedUrl = parseHttpUrl(url);
+
+    if (!parsedUrl) {
         return res.status(400).send(
             "Lien invalide."
         );
-
     }
-
-
-    if (
-        parsedUrl.protocol !== "http:" &&
-        parsedUrl.protocol !== "https:"
-    ) {
-
-        return res.status(400).send(
-            "Protocole non autorisé."
-        );
-
-    }
-
 
     const protocol =
         parsedUrl.protocol === "https:"
             ? https
             : http;
 
+    const request = protocol.get(
+        parsedUrl.href,
+        {
+            headers: {
+                "User-Agent": "VideoHub/1.0",
+                "Accept": "*/*"
+            }
+        },
+        (response) => {
 
-    const request =
-        protocol.get(
-            parsedUrl.href,
-            {
-                headers: {
-                    "User-Agent":
-                        "VideoHub/1.0"
-                }
-            },
-            (response) => {
+            // ==================================================
+            // REDIRECTION
+            // ==================================================
 
+            if (
+                response.statusCode >= 300 &&
+                response.statusCode < 400 &&
+                response.headers.location
+            ) {
 
-                // Redirection
-                if (
-                    response.statusCode >= 300 &&
-                    response.statusCode < 400 &&
-                    response.headers.location
-                ) {
+                response.resume();
 
-                    response.resume();
+                const redirectUrl =
+                    new URL(
+                        response.headers.location,
+                        parsedUrl.href
+                    ).href;
 
-                    const redirectUrl =
-                        new URL(
-                            response.headers.location,
-                            parsedUrl.href
-                        ).href;
+                return downloadDirectFile(
+                    redirectUrl,
+                    res,
+                    redirectCount + 1
+                );
+            }
 
-                    return res.redirect(
-                        "/api/download-url?url=" +
-                        encodeURIComponent(
-                            redirectUrl
-                        )
-                    );
+            // ==================================================
+            // ERREUR SERVEUR
+            // ==================================================
 
-                }
+            if (
+                response.statusCode < 200 ||
+                response.statusCode >= 300
+            ) {
 
+                response.resume();
 
-                if (
-                    response.statusCode !== 200
-                ) {
+                return res.status(400).send(
+                    "Impossible de récupérer le fichier."
+                );
+            }
 
-                    response.resume();
+            // ==================================================
+            // INFORMATIONS DU FICHIER
+            // ==================================================
 
-                    return res.status(400).send(
-                        "Impossible de récupérer le fichier."
-                    );
+            const contentType =
+                response.headers["content-type"] ||
+                "application/octet-stream";
 
-                }
+            const contentLength =
+                response.headers["content-length"];
 
-
-                const contentType =
-                    response.headers[
-                        "content-type"
-                    ] || "video/mp4";
-
-
-                res.setHeader(
-                    "Content-Type",
+            const filename =
+                getSafeFilename(
+                    parsedUrl.href,
                     contentType
                 );
 
+            // ==================================================
+            // HEADERS DE TÉLÉCHARGEMENT
+            // ==================================================
 
+            res.setHeader(
+                "Content-Type",
+                contentType
+            );
+
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${filename}"`
+            );
+
+            if (contentLength) {
                 res.setHeader(
-                    "Content-Disposition",
-                    'attachment; filename="VideoHub-video.mp4"'
+                    "Content-Length",
+                    contentLength
+                );
+            }
+
+            // ==================================================
+            // TRANSFERT DU FICHIER
+            // ==================================================
+
+            response.pipe(res);
+
+            response.on("error", (error) => {
+
+                console.log(
+                    "Erreur pendant le transfert :",
+                    error.message
                 );
 
-
-                if (
-                    response.headers[
-                        "content-length"
-                    ]
-                ) {
-
-                    res.setHeader(
-                        "Content-Length",
-                        response.headers[
-                            "content-length"
-                        ]
+                if (!res.headersSent) {
+                    res.status(500).send(
+                        "Erreur pendant le téléchargement."
                     );
-
+                } else {
+                    res.destroy();
                 }
+            });
+        }
+    );
 
-
-                response.pipe(res);
-
-            }
-        );
-
+    // ======================================================
+    // TIMEOUT
+    // ======================================================
 
     request.setTimeout(
         120000,
@@ -330,93 +371,89 @@ app.get("/api/download-url", (req, res) => {
             request.destroy();
 
             if (!res.headersSent) {
-
                 res.status(504).send(
-                    "Téléchargement trop long."
+                    "Le téléchargement a pris trop de temps."
                 );
-
             }
-
         }
     );
 
+    // ======================================================
+    // ERREUR DE CONNEXION
+    // ======================================================
 
-    request.on(
-        "error",
-        (error) => {
+    request.on("error", (error) => {
 
-            console.log(
-                "Erreur téléchargement :",
-                error.message
+        console.log(
+            "Erreur téléchargement :",
+            error.message
+        );
+
+        if (!res.headersSent) {
+            res.status(500).send(
+                "Erreur pendant le téléchargement."
             );
-
-
-            if (!res.headersSent) {
-
-                res.status(500).send(
-                    "Erreur pendant le téléchargement."
-                );
-
-            }
-
         }
-    );
+    });
+}
 
+// ======================================================
+// API DOWNLOAD-URL
+// ======================================================
+
+app.get("/api/download-url", (req, res) => {
+
+    const url = req.query.url;
+
+    if (!url) {
+        return res.status(400).send(
+            "Lien manquant."
+        );
+    }
+
+    downloadDirectFile(url, res);
 });
 
-
-// ========================================
-// TÉLÉCHARGEMENT VIA FETCH
-// ========================================
+// ======================================================
+// API DOWNLOAD AVEC FETCH
+// ======================================================
 
 app.get("/api/download", async (req, res) => {
 
     const url = req.query.url;
 
     if (!url) {
-
         return res.status(400).send(
             "Aucun lien fourni."
         );
-
     }
 
+    const parsedUrl = parseHttpUrl(url);
+
+    if (!parsedUrl) {
+        return res.status(400).send(
+            "Lien invalide."
+        );
+    }
 
     try {
 
-        const parsedUrl =
-            new URL(url);
-
-
-        if (
-            parsedUrl.protocol !== "http:" &&
-            parsedUrl.protocol !== "https:"
-        ) {
-
-            return res.status(400).send(
-                "Protocole non autorisé."
-            );
-
-        }
-
-
-        const response =
-            await fetch(
-                parsedUrl.href,
-                {
-                    redirect: "follow"
+        const response = await fetch(
+            parsedUrl.href,
+            {
+                redirect: "follow",
+                headers: {
+                    "User-Agent": "VideoHub/1.0",
+                    "Accept": "*/*"
                 }
-            );
-
+            }
+        );
 
         if (!response.ok) {
-
             return res.status(400).send(
                 "Impossible de télécharger ce fichier."
             );
-
         }
-
 
         const contentType =
             response.headers.get(
@@ -424,47 +461,42 @@ app.get("/api/download", async (req, res) => {
             ) ||
             "application/octet-stream";
 
-
         const contentLength =
             response.headers.get(
                 "content-length"
             );
 
+        const filename =
+            getSafeFilename(
+                response.url || parsedUrl.href,
+                contentType
+            );
 
         res.setHeader(
             "Content-Type",
             contentType
         );
 
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${filename}"`
+        );
 
         if (contentLength) {
-
             res.setHeader(
                 "Content-Length",
                 contentLength
             );
-
         }
 
-
-        res.setHeader(
-            "Content-Disposition",
-            'attachment; filename="VideoHub-video"'
-        );
-
-
         if (!response.body) {
-
             return res.status(500).send(
                 "Aucun fichier reçu."
             );
-
         }
-
 
         const reader =
             response.body.getReader();
-
 
         while (true) {
 
@@ -473,21 +505,14 @@ app.get("/api/download", async (req, res) => {
                 value
             } = await reader.read();
 
-
             if (done) {
-
                 break;
-
             }
 
-
             res.write(value);
-
         }
 
-
         res.end();
-
 
     } catch (error) {
 
@@ -496,23 +521,31 @@ app.get("/api/download", async (req, res) => {
             error.message
         );
 
-
         if (!res.headersSent) {
-
             res.status(500).send(
                 "Erreur pendant le téléchargement."
             );
-
+        } else {
+            res.destroy();
         }
-
     }
-
 });
 
+// ======================================================
+// ROUTE 404 API
+// ======================================================
 
-// ========================================
-// DÉMARRAGE DU SERVEUR
-// ========================================
+app.use("/api", (req, res) => {
+
+    res.status(404).json({
+        success: false,
+        message: "Route API introuvable."
+    });
+});
+
+// ======================================================
+// DÉMARRAGE
+// ======================================================
 
 app.listen(
     PORT,
@@ -523,5 +556,9 @@ app.listen(
             `VideoHub fonctionne sur le port ${PORT}`
         );
 
+        console.log(
+            `Adresse locale : http://localhost:${PORT}`
+        );
     }
 );
+
