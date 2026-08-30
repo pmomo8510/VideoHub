@@ -1,0 +1,2534 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="VideoHub - Analyse et gestion de liens vidéo depuis un seul endroit.">
+
+<title>VideoHub</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #0b0b0b;
+    color: white;
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 6%;
+
+    background: rgba(16,16,16,0.96);
+
+    border-bottom: 1px solid #222;
+
+    backdrop-filter: blur(10px);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #ff1744;
+
+    border-radius: 10px;
+
+    box-shadow: 0 5px 20px rgba(255,23,68,0.25);
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    width: 92%;
+    max-width: 850px;
+
+    margin: auto;
+
+    padding: 65px 0 45px;
+
+    text-align: center;
+}
+
+.main-logo {
+    width: 90px;
+    height: 90px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #ff1744;
+
+    border-radius: 25px;
+
+    font-size: 42px;
+
+    box-shadow:
+        0 15px 40px rgba(255,23,68,0.2);
+}
+
+h1 {
+    font-size: 52px;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    color: #999;
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+/* =========================
+   PUBLICITE 1
+========================= */
+
+
+.ad-container {
+    display: none;
+}
+
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box {
+    background: #151515;
+
+    padding: 12px;
+
+    border: 1px solid #292929;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.25);
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+
+    padding: 18px;
+
+    border: 1px solid transparent;
+
+    border-radius: 10px;
+
+    background: #222;
+
+    color: white;
+
+    font-size: 16px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #ff1744;
+}
+
+button {
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 0 25px;
+
+    background: #ff1744;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #e00032;
+}
+
+.small-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+.small-button {
+    padding: 10px 16px;
+
+    background: #292929;
+
+    font-size: 14px;
+}
+
+.small-button:hover {
+    background: #3a3a3a;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message {
+    margin-top: 25px;
+    min-height: 25px;
+}
+
+.success {
+    color: #4caf50;
+}
+
+.error {
+    color: #ff5252;
+}
+
+.loading {
+    color: #ffc107;
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.loader {
+    width: 35px;
+    height: 35px;
+
+    margin: 15px auto 10px;
+
+    border: 4px solid #292929;
+
+    border-top: 4px solid #ff1744;
+
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+/* =========================
+   RESULT
+========================= */
+
+#result {
+    display: none;
+    margin-top: 30px;
+}
+
+.video-card {
+    background: #171717;
+
+    border: 1px solid #292929;
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.2);
+}
+
+.video-container {
+    position: relative;
+
+    width: 100%;
+
+    padding-bottom: 56.25%;
+
+    margin-top: 20px;
+}
+
+.video-container iframe {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border: none;
+
+    border-radius: 12px;
+}
+
+.youtube-thumbnail {
+    width: 100%;
+    max-width: 480px;
+
+    margin: 20px auto 0;
+
+    border-radius: 12px;
+
+    display: block;
+}
+
+.action-button {
+    display: inline-block;
+
+    margin-top: 20px;
+
+    padding: 14px 25px;
+
+    background: #333;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.action-button:hover {
+    background: #444;
+
+    transform: translateY(-1px);
+}
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+.download-button {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #ff1744;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.download-button:hover {
+    transform: translateY(-2px);
+
+    background: #e00032;
+}
+
+.download-button:active {
+    transform: scale(0.98);
+}
+
+.download-button:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+#cancelButton {
+    margin-top: 10px;
+
+    background: #333;
+
+    padding: 10px 18px;
+}
+
+#cancelButton:hover {
+    background: #444;
+}
+
+.download-button.loading {
+    animation: downloadPulse 1s infinite;
+}
+
+@keyframes downloadPulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+/* =========================
+   HISTORIQUE
+========================= */
+
+.history-section {
+    width: 92%;
+    max-width: 850px;
+
+    margin: auto;
+
+    padding: 30px 0 50px;
+}
+
+.history-section h2 {
+    text-align: center;
+
+    margin-bottom: 20px;
+}
+
+.history-item {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #151515;
+
+    border: 1px solid #292929;
+
+    padding: 15px;
+
+    margin-bottom: 10px;
+
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+.history-item:hover {
+    border-color: #444;
+    transform: translateY(-1px);
+}
+
+.history-link {
+    color: #aaa;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    text-decoration: none;
+
+    width: 100%;
+}
+
+.history-link:hover {
+    color: white;
+}
+
+.clear-history-button {
+    display: block;
+
+    margin: 20px auto 0;
+
+    padding: 12px 20px;
+
+    background: #292929;
+}
+
+.clear-history-button:hover {
+    background: #3a3a3a;
+}
+
+/* =========================
+   PLATEFORMES
+========================= */
+
+.platforms {
+    width: 92%;
+    max-width: 1000px;
+
+    margin: auto;
+
+    padding: 40px 0 70px;
+}
+
+.platforms h2 {
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+.platform-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.platform-card {
+    background: #151515;
+
+    border: 1px solid #292929;
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    transition: 0.2s;
+}
+
+.platform-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #444;
+}
+
+.platform-card div {
+    font-size: 40px;
+
+    margin-bottom: 10px;
+}
+
+.platform-card p {
+    color: #999;
+
+    font-size: 14px;
+
+    margin-top: 8px;
+}
+
+/* =========================
+   SECTION INFO
+========================= */
+
+.info-section {
+    width: 92%;
+    max-width: 850px;
+
+    margin: auto;
+
+    padding: 45px 0;
+}
+
+.info-card {
+    background: #151515;
+
+    border: 1px solid #292929;
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    margin-bottom: 20px;
+}
+
+.info-card h2 {
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.info-card p {
+    color: #aaa;
+    margin-bottom: 12px;
+}
+
+.info-card ul {
+    color: #aaa;
+
+    padding-left: 20px;
+}
+
+.info-card li {
+    margin-bottom: 8px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    border-top: 1px solid #222;
+
+    padding: 30px 20px;
+
+    text-align: center;
+
+    color: #777;
+
+    background: #101010;
+}
+
+.footer-links {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 15px;
+}
+
+.footer-links a {
+    color: #888;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+.animate-result {
+    animation: appear 0.4s ease-out;
+}
+
+@keyframes appear {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    nav {
+        padding: 15px 4%;
+    }
+
+    .nav-logo {
+        font-size: 20px;
+    }
+
+    .nav-links {
+        gap: 10px;
+        font-size: 13px;
+    }
+
+    .nav-links a:nth-child(2) {
+        display: none;
+    }
+
+    h1 {
+        font-size: 40px;
+    }
+
+    .hero {
+        padding-top: 45px;
+    }
+
+    .input-area {
+        flex-direction: column;
+    }
+
+    button {
+        padding: 17px;
+    }
+
+    .platform-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .history-item {
+        display: block;
+    }
+
+    .video-card {
+        padding: 18px;
+    }
+
+    .info-card {
+        padding: 22px;
+    }
+
+}
+
+/* =========================
+   PETIT TELEPHONE
+========================= */
+
+@media (max-width: 420px) {
+
+    .nav-links a {
+        display: none;
+    }
+
+    .platform-grid {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 34px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<nav>
+
+<div class="nav-logo">
+
+    <div class="logo-icon">
+        ▶
+    </div>
+
+    <span>
+        VideoHub
+    </span>
+
+</div>
+
+<div class="nav-links">
+
+    <a href="#home">
+        Accueil
+    </a>
+
+    <a href="#platforms">
+        Plateformes
+    </a>
+
+    <a href="#about">
+        À propos
+    </a>
+
+</div>
+
+
+</nav>
+
+<!-- =========================
+     ACCUEIL
+========================= -->
+
+<section
+    class="hero"
+    id="home"
+>
+
+
+<div class="main-logo">
+    ▶
+</div>
+
+<h1>
+    VideoHub
+</h1>
+
+<p class="subtitle">
+    Analyse tes liens vidéo depuis un seul endroit
+</p>
+
+
+<!-- PUBLICITE 1 -->
+
+<div class="ad-container">
+
+    <span>
+        ESPACE PUBLICITAIRE
+    </span>
+
+    <!--
+    Le code de ta régie publicitaire
+    pourra être placé ici plus tard.
+    -->
+
+</div>
+
+
+<div class="search-box">
+
+    <div class="input-area">
+
+        <input
+            type="text"
+            id="videoUrl"
+            placeholder="Colle un lien vidéo..."
+            autocomplete="off"
+        >
+
+        <button
+            onclick="analyzeVideo()"
+        >
+            ANALYSER
+        </button>
+
+    </div>
+
+
+    <div class="small-buttons">
+
+        <button
+            class="small-button"
+            onclick="pasteLink()"
+        >
+            📋 Coller
+        </button>
+
+        <button
+            class="small-button"
+            onclick="clearLink()"
+        >
+            🗑️ Effacer
+        </button>
+
+    </div>
+
+</div>
+
+
+<div id="message"></div>
+
+
+<div id="result"></div>
+
+
+</section>
+
+<!-- =========================
+     PUBLICITE 2
+========================= -->
+
+<div
+    class="ad-container"
+    style="width:92%;"
+>
+
+
+<span>
+    ESPACE PUBLICITAIRE
+</span>
+
+
+</div>
+
+<!-- =========================
+     HISTORIQUE
+========================= -->
+
+<section class="history-section">
+
+
+<h2>
+    📜 Derniers liens analysés
+</h2>
+
+<div id="historyList"></div>
+
+<button
+    class="clear-history-button"
+    onclick="clearHistory()"
+>
+    🗑️ Effacer l'historique
+</button>
+
+
+</section>
+
+<!-- =========================
+     PLATEFORMES
+========================= -->
+
+<section
+    class="platforms"
+    id="platforms"
+>
+
+
+<h2>
+    Plateformes supportées
+</h2>
+
+<div class="platform-grid">
+
+    <div class="platform-card">
+
+        <div>
+            ▶️
+        </div>
+
+        <h3>
+            YouTube
+        </h3>
+
+        <p>
+            Lecture intégrée
+        </p>
+
+    </div>
+
+
+    <div class="platform-card">
+
+        <div>
+            🎵
+        </div>
+
+        <h3>
+            TikTok
+        </h3>
+
+        <p>
+            Détection du lien
+        </p>
+
+    </div>
+
+
+    <div class="platform-card">
+
+        <div>
+            𝕏
+        </div>
+
+        <h3>
+            X / Twitter
+        </h3>
+
+        <p>
+            Détection du lien
+        </p>
+
+    </div>
+
+
+    <div class="platform-card">
+
+        <div>
+            👻
+        </div>
+
+        <h3>
+            Snapchat
+        </h3>
+
+        <p>
+            Détection du lien
+        </p>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     PUBLICITE 3
+========================= -->
+
+<div
+    class="ad-container"
+    style="width:92%;"
+>
+
+
+<span>
+    ESPACE PUBLICITAIRE
+</span>
+
+
+</div>
+
+<!-- =========================
+     A PROPOS
+========================= -->
+
+<section
+    class="info-section"
+    id="about"
+>
+
+
+<div class="info-card">
+
+    <h2>
+        ℹ️ À propos de VideoHub
+    </h2>
+
+    <p>
+        VideoHub est un outil web conçu pour analyser
+        différents liens vidéo depuis une interface simple
+        et rapide.
+    </p>
+
+    <p>
+        Notre objectif est de proposer une expérience
+        claire, moderne et facile à utiliser sur ordinateur
+        comme sur téléphone.
+    </p>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>
+        ❓ Comment ça marche ?
+    </h2>
+
+    <h3>
+        1. Colle ton lien
+    </h3>
+
+    <p>
+        Colle l'adresse de la vidéo dans la zone prévue.
+    </p>
+
+    <h3>
+        2. Analyse le lien
+    </h3>
+
+    <p>
+        Clique sur le bouton « ANALYSER ».
+    </p>
+
+    <h3>
+        3. Consulte le résultat
+    </h3>
+
+    <p>
+        VideoHub identifie la plateforme et affiche les
+        possibilités disponibles.
+    </p>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>
+        🔒 Confidentialité
+    </h2>
+
+    <p>
+        VideoHub utilise certaines fonctionnalités
+        du navigateur, notamment le stockage local,
+        afin de conserver l'historique récent des liens
+        analysés.
+    </p>
+
+    <p>
+        Les données enregistrées localement peuvent être
+        supprimées à tout moment avec le bouton
+        « Effacer l'historique ».
+    </p>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>
+        📋 Conditions d'utilisation
+    </h2>
+
+    <p>
+        L'utilisateur doit utiliser VideoHub conformément
+        aux lois applicables et aux droits des propriétaires
+        des contenus.
+    </p>
+
+    <p>
+        L'utilisateur est responsable des liens et contenus
+        qu'il utilise avec le service.
+    </p>
+
+    <p>
+        VideoHub ne doit pas être utilisé pour contourner
+        des protections techniques, des restrictions
+        d'accès ou des droits d'auteur.
+    </p>
+
+</div>
+
+
+<div class="info-card">
+
+    <h2>
+        📩 Contact
+    </h2>
+
+    <p>
+        Pour toute question concernant VideoHub,
+        tu peux ajouter ici ton adresse e-mail de contact.
+    </p>
+
+    <p>
+        Exemple :
+        <strong>
+            contact@ton-domaine.com
+        </strong>
+    </p>
+
+    <!--
+    REMPLACE l'adresse ci-dessus par ton véritable
+    e-mail lorsque ton domaine sera configuré.
+    -->
+
+</div>
+
+
+</section>
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+
+<div class="footer-links">
+
+    <a href="#home">
+        Accueil
+    </a>
+
+    <a href="#about">
+        À propos
+    </a>
+
+    <a href="#about">
+        Confidentialité
+    </a>
+
+    <a href="#about">
+        Conditions
+    </a>
+
+    <a href="#about">
+        Contact
+    </a>
+
+</div>
+
+<p>
+    © 2026 VideoHub — Tous droits réservés.
+</p>
+
+
+</footer>
+
+<script>
+
+/* =========================
+   TELECHARGEMENT
+========================= */
+
+let downloadController = null;
+
+
+function cancelDownload() {
+
+    if (downloadController) {
+
+        downloadController.abort();
+
+    }
+
+}
+
+
+async function downloadVideo(url) {
+
+    downloadController =
+        new AbortController();
+
+    const progress =
+        document.getElementById(
+            "downloadProgress"
+        );
+
+    const progressBar =
+        document.getElementById(
+            "progressBar"
+        );
+
+    const progressText =
+        document.getElementById(
+            "progressText"
+        );
+
+    const cancelButton =
+        document.getElementById(
+            "cancelButton"
+        );
+
+    const downloadButton =
+        document.querySelector(
+            ".download-button"
+        );
+
+    const fileName =
+        "VideoHub_" +
+        Date.now() +
+        ".mp4";
+
+
+    try {
+
+        if (downloadButton) {
+
+            downloadButton.disabled = true;
+
+            downloadButton.textContent =
+                "⏳ Téléchargement...";
+
+            downloadButton.classList.add(
+                "loading"
+            );
+
+        }
+
+
+        progress.style.display =
+            "block";
+
+        progressBar.style.width =
+            "0%";
+
+        progressText.textContent =
+            "⏳ Préparation du téléchargement...";
+
+        cancelButton.style.display =
+            "inline-block";
+
+
+        let response;
+
+
+        try {
+
+            response =
+                await fetch(url, {
+                    signal:
+                        downloadController.signal
+                });
+
+        }
+
+        catch (fetchError) {
+
+            console.warn(
+                "Fetch bloqué, téléchargement direct :",
+                fetchError
+            );
+
+
+            const directLink =
+                document.createElement(
+                    "a"
+                );
+
+            directLink.href =
+                url;
+
+            directLink.download =
+                fileName;
+
+            directLink.target =
+                "_blank";
+
+            document.body.appendChild(
+                directLink
+            );
+
+            directLink.click();
+
+            directLink.remove();
+
+
+            progressBar.style.width =
+                "100%";
+
+            progressText.textContent =
+                "✅ Téléchargement lancé !";
+
+
+            setTimeout(() => {
+
+                progress.style.display =
+                    "none";
+
+            }, 3000);
+
+
+            if (downloadButton) {
+
+                downloadButton.disabled =
+                    false;
+
+                downloadButton.textContent =
+                    "⬇️ Télécharger la vidéo";
+
+                downloadButton.classList.remove(
+                    "loading"
+                );
+
+            }
+
+
+            cancelButton.style.display =
+                "none";
+
+            downloadController =
+                null;
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Impossible de télécharger la vidéo."
+            );
+
+        }
+
+
+        const total =
+            Number(
+                response.headers.get(
+                    "content-length"
+                )
+            ) || 0;
+
+
+        let loaded = 0;
+
+        const reader =
+            response.body.getReader();
+
+        const chunks = [];
+
+
+        while (true) {
+
+            const {
+                done,
+                value
+            } =
+                await reader.read();
+
+
+            if (done) {
+                break;
+            }
+
+
+            chunks.push(value);
+
+            loaded += value.length;
+
+
+            if (total > 0) {
+
+                const percent =
+                    Math.round(
+                        (loaded / total) *
+                        100
+                    );
+
+
+                progressBar.style.width =
+                    percent + "%";
+
+
+                progressText.textContent =
+                    "⏳ Téléchargement : " +
+                    percent +
+                    "%";
+
+            }
+
+            else {
+
+                progressText.textContent =
+                    "⏳ Téléchargement : " +
+                    (
+                        loaded /
+                        1024 /
+                        1024
+                    ).toFixed(1) +
+                    " MB";
+
+            }
+
+        }
+
+
+        const blob =
+            new Blob(
+                chunks,
+                {
+                    type:
+                        response.headers.get(
+                            "content-type"
+                        ) ||
+                        "video/mp4"
+                }
+            );
+
+
+        const downloadUrl =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            downloadUrl;
+
+        link.download =
+            fileName;
+
+
+        document.body.appendChild(
+            link
+        );
+
+        link.click();
+
+        link.remove();
+
+
+        URL.revokeObjectURL(
+            downloadUrl
+        );
+
+
+        progressBar.style.width =
+            "100%";
+
+        progressText.textContent =
+            "✅ Téléchargement terminé !";
+
+
+        if (downloadButton) {
+
+            downloadButton.disabled =
+                false;
+
+            downloadButton.textContent =
+                "⬇️ Télécharger la vidéo";
+
+            downloadButton.classList.remove(
+                "loading"
+            );
+
+        }
+
+
+        setTimeout(() => {
+
+            progress.style.display =
+                "none";
+
+        }, 3000);
+
+
+        cancelButton.style.display =
+            "none";
+
+        downloadController =
+            null;
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            progressText.textContent =
+                "❌ Téléchargement annulé.";
+
+        }
+
+        else {
+
+            console.error(
+                error
+            );
+
+            progressText.textContent =
+                "❌ Erreur pendant le téléchargement.";
+
+        }
+
+
+        if (downloadButton) {
+
+            downloadButton.disabled =
+                false;
+
+            downloadButton.textContent =
+                "⬇️ Télécharger la vidéo";
+
+            downloadButton.classList.remove(
+                "loading"
+            );
+
+        }
+
+
+        cancelButton.style.display =
+            "none";
+
+        downloadController =
+            null;
+
+    }
+
+}
+
+
+/* =========================
+   YOUTUBE ID
+========================= */
+
+function getYouTubeId(url) {
+
+    try {
+
+        const link =
+            new URL(url);
+
+        const host =
+            link.hostname
+                .toLowerCase()
+                .replace("www.", "");
+
+
+        if (host === "youtu.be") {
+
+            return link.pathname
+                .substring(1)
+                .split("/")[0];
+
+        }
+
+
+        if (host === "youtube.com") {
+
+            if (
+                link.pathname === "/watch"
+            ) {
+
+                return link.searchParams.get(
+                    "v"
+                );
+
+            }
+
+
+            if (
+                link.pathname.startsWith(
+                    "/shorts/"
+                )
+            ) {
+
+                return link.pathname
+                    .split("/")[2];
+
+            }
+
+
+            if (
+                link.pathname.startsWith(
+                    "/embed/"
+                )
+            ) {
+
+                return link.pathname
+                    .split("/")[2];
+
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        return null;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================
+   ANALYSE
+========================= */
+
+async function analyzeVideo() {
+
+    const input =
+        document.getElementById(
+            "videoUrl"
+        );
+
+    const url =
+        input.value.trim();
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    result.style.display =
+        "none";
+
+    result.innerHTML =
+        "";
+
+
+    if (!url) {
+
+        message.className =
+            "error";
+
+        message.innerHTML =
+            "⚠️ Colle d'abord un lien.";
+
+        return;
+
+    }
+
+
+    message.className =
+        "loading";
+
+    message.innerHTML = `
+        <div class="loader"></div>
+        🔍 Analyse du lien...
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/analyze",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            url: url
+                        })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Serveur : " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            message.className =
+                "error";
+
+            message.innerHTML =
+                "❌ " +
+                data.message;
+
+            return;
+
+        }
+
+
+        message.className =
+            "success";
+
+        message.innerHTML =
+            "✅ " +
+            data.platform +
+            " détecté !";
+
+
+        saveHistory(
+            data.platform,
+            url
+        );
+
+
+        if (
+            data.platform ===
+            "YouTube"
+        ) {
+
+            showYouTube(url);
+
+        }
+
+        else if (
+            data.platform ===
+            "TikTok"
+        ) {
+
+            showPlatform(
+                "🎵",
+                "TikTok",
+                url
+            );
+
+        }
+
+        else if (
+            data.platform ===
+            "X / Twitter"
+        ) {
+
+            showPlatform(
+                "𝕏",
+                "X / Twitter",
+                url
+            );
+
+        }
+
+        else if (
+            data.platform ===
+            "Snapchat"
+        ) {
+
+            showPlatform(
+                "👻",
+                "Snapchat",
+                url
+            );
+
+        }
+
+        else {
+
+            showDirectLink(
+                url,
+                data.contentType,
+                data.contentLength
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Erreur VideoHub :",
+            error
+        );
+
+        message.className =
+            "error";
+
+        message.innerHTML =
+            "❌ Impossible de contacter le serveur.";
+
+    }
+
+}
+
+
+/* =========================
+   YOUTUBE
+========================= */
+
+function showYouTube(url) {
+
+    const id =
+        getYouTubeId(url);
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    if (!id) {
+
+        result.innerHTML = `
+            <div class="video-card">
+                ❌ Lien YouTube invalide.
+            </div>
+        `;
+
+        result.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    const thumbnail =
+        "https://img.youtube.com/vi/" +
+        id +
+        "/hqdefault.jpg";
+
+
+    result.innerHTML = `
+
+        <div class="video-card">
+
+            <h2>
+                ▶️ Vidéo YouTube
+            </h2>
+
+            <img
+                src="${thumbnail}"
+                class="youtube-thumbnail"
+                alt="Miniature YouTube"
+            >
+
+            <div class="video-container">
+
+                <iframe
+                    src="https://www.youtube.com/embed/${id}"
+                    title="Vidéo YouTube"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+
+            </div>
+
+            <a
+                class="action-button"
+                href="${url}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Ouvrir sur YouTube
+            </a>
+
+            <button
+                class="action-button"
+                onclick="copyLink('${url}')"
+            >
+                📋 Copier le lien
+            </button>
+
+        </div>
+
+    `;
+
+
+    result.style.display =
+        "block";
+
+
+    result.classList.remove(
+        "animate-result"
+    );
+
+    void result.offsetWidth;
+
+    result.classList.add(
+        "animate-result"
+    );
+
+}
+
+
+/* =========================
+   PLATEFORME
+========================= */
+
+function showPlatform(
+    icon,
+    platform,
+    url
+) {
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    result.innerHTML = `
+
+        <div class="video-card">
+
+            <h2>
+                ${icon} ${platform}
+            </h2>
+
+            <p style="
+                color:#999;
+                margin-top:15px;
+            ">
+                Contenu détecté avec succès.
+            </p>
+
+            <a
+                class="action-button"
+                href="${url}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Ouvrir le contenu
+            </a>
+
+        </div>
+
+    `;
+
+
+    result.style.display =
+        "block";
+
+}
+
+
+/* =========================
+   LIEN DIRECT
+========================= */
+
+function showDirectLink(
+    url,
+    contentType,
+    contentLength
+) {
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    let format =
+        "Inconnu";
+
+
+    if (contentType) {
+
+        format =
+            contentType
+                .split(";")[0]
+                .replace("video/", "")
+                .toUpperCase();
+
+    }
+
+
+    let size =
+        "Inconnue";
+
+
+    if (contentLength) {
+
+        const bytes =
+            Number(contentLength);
+
+
+        if (
+            bytes >=
+            1024 * 1024
+        ) {
+
+            size =
+                (
+                    bytes /
+                    (1024 * 1024)
+                ).toFixed(1) +
+                " MB";
+
+        }
+
+        else if (
+            bytes >= 1024
+        ) {
+
+            size =
+                (
+                    bytes /
+                    1024
+                ).toFixed(1) +
+                " KB";
+
+        }
+
+        else {
+
+            size =
+                bytes +
+                " octets";
+
+        }
+
+    }
+
+
+    result.innerHTML = `
+
+        <div class="video-card">
+
+            <h2>
+                🎬 Vidéo directe
+            </h2>
+
+            <p style="
+                color:#999;
+                margin-top:15px;
+            ">
+                📁 Format :
+                <strong>
+                    ${format}
+                </strong>
+            </p>
+
+            <p style="
+                color:#999;
+                margin-top:8px;
+            ">
+                📦 Taille :
+                <strong>
+                    ${size}
+                </strong>
+            </p>
+
+            <video
+                controls
+                style="
+                    width:100%;
+                    margin-top:20px;
+                    border-radius:12px;
+                    background:#000;
+                "
+            >
+
+                <source
+                    src="${url}"
+                    type="${contentType || "video/mp4"}"
+                >
+
+                Ton navigateur ne peut pas lire cette vidéo.
+
+            </video>
+
+            <p style="
+                color:#777;
+                font-size:13px;
+                margin-top:15px;
+            ">
+                💾 Le fichier sera enregistré sur ton ordinateur.
+            </p>
+
+            <button
+                class="download-button"
+                onclick="downloadVideo('${url}')"
+            >
+                ⬇️ Télécharger la vidéo
+            </button>
+
+            <div
+                id="downloadProgress"
+                style="
+                    display:none;
+                    margin-top:20px;
+                "
+            >
+
+                <div
+                    style="
+                        background:#333;
+                        border-radius:10px;
+                        overflow:hidden;
+                        height:20px;
+                    "
+                >
+
+                    <div
+                        id="progressBar"
+                        style="
+                            width:0%;
+                            height:100%;
+                            background:#ff1744;
+                            transition:width 0.2s;
+                        "
+                    ></div>
+
+                </div>
+
+                <p
+                    id="progressText"
+                    style="margin-top:8px;"
+                >
+                    0%
+                </p>
+
+                <button
+                    id="cancelButton"
+                    class="action-button"
+                    onclick="cancelDownload()"
+                    style="display:none;"
+                >
+                    ❌ Annuler le téléchargement
+                </button>
+
+            </div>
+
+            <button
+                class="action-button"
+                onclick="copyLink('${url}')"
+            >
+                📋 Copier le lien
+            </button>
+
+        </div>
+
+    `;
+
+
+    result.style.display =
+        "block";
+
+}
+
+
+/* =========================
+   PRESSE-PAPIERS
+========================= */
+
+async function pasteLink() {
+
+    try {
+
+        const text =
+            await navigator.clipboard.readText();
+
+
+        document.getElementById(
+            "videoUrl"
+        ).value =
+            text;
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Impossible d'accéder au presse-papiers."
+        );
+
+    }
+
+}
+
+
+function clearLink() {
+
+    document.getElementById(
+        "videoUrl"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "message"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "result"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "result"
+    ).innerHTML =
+        "";
+
+}
+
+
+/* =========================
+   HISTORIQUE DES 5 LIENS
+========================= */
+
+function saveHistory(
+    platform,
+    url
+) {
+
+    let history =
+        JSON.parse(
+            localStorage.getItem(
+                "videohub_history"
+            )
+        ) || [];
+
+
+    history =
+        history.filter(
+            item => item.url !== url
+        );
+
+
+    history.unshift({
+        platform: platform,
+        url: url
+    });
+
+
+    history =
+        history.slice(0, 5);
+
+
+    localStorage.setItem(
+        "videohub_history",
+        JSON.stringify(history)
+    );
+
+
+    displayHistory();
+
+}
+
+
+function displayHistory() {
+
+    const list =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "videohub_history"
+            )
+        ) || [];
+
+
+    list.innerHTML =
+        "";
+
+
+    if (
+        history.length === 0
+    ) {
+
+        list.innerHTML = `
+            <p style="
+                text-align:center;
+                color:#777;
+            ">
+                Aucun lien analysé pour le moment.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    history.forEach(
+        function(item) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "history-item";
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.className =
+                "history-link";
+
+
+            link.href =
+                "#home";
+
+
+            link.textContent =
+                item.platform +
+                " — " +
+                item.url;
+
+
+            link.onclick =
+                function() {
+
+                    document.getElementById(
+                        "videoUrl"
+                    ).value =
+                        item.url;
+
+                };
+
+
+            div.appendChild(
+                link
+            );
+
+
+            list.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+function clearHistory() {
+
+    localStorage.removeItem(
+        "videohub_history"
+    );
+
+
+    displayHistory();
+
+}
+
+
+/* =========================
+   COPIER LIEN
+========================= */
+
+async function copyLink(url) {
+
+    try {
+
+        await navigator.clipboard.writeText(
+            url
+        );
+
+        alert(
+            "✅ Lien copié !"
+        );
+
+    }
+
+    catch (error) {
+
+        alert(
+            "❌ Impossible de copier le lien."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   INITIALISATION
+========================= */
+
+displayHistory();
+
+
+document
+    .getElementById(
+        "videoUrl"
+    )
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                analyzeVideo();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
