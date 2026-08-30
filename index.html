@@ -1265,368 +1265,300 @@ function cancelDownload() {
 }
 
 
+
 async function downloadVideo(url) {
 
-    downloadController =
-        new AbortController();
+    downloadController = new AbortController();
 
     const progress =
-        document.getElementById(
-            "downloadProgress"
-        );
+        document.getElementById("downloadProgress");
 
     const progressBar =
-        document.getElementById(
-            "progressBar"
-        );
+        document.getElementById("progressBar");
 
     const progressText =
-        document.getElementById(
-            "progressText"
-        );
+        document.getElementById("progressText");
 
     const cancelButton =
-        document.getElementById(
-            "cancelButton"
-        );
+        document.getElementById("cancelButton");
 
     const downloadButton =
-        document.querySelector(
-            ".download-button"
-        );
+        document.querySelector(".download-button");
 
     const fileName =
-        "VideoHub_" +
-        Date.now() +
-        ".mp4";
+        "VideoHub_" + Date.now() + ".mp4";
 
+    const startTime = Date.now();
+
+    let lastTime = startTime;
+    let lastLoaded = 0;
 
     try {
 
-        if (downloadButton) {
+        downloadButton.disabled = true;
+        downloadButton.textContent =
+            "⏳ Téléchargement...";
+        downloadButton.classList.add("loading");
 
-            downloadButton.disabled = true;
+        progress.style.display = "block";
+        cancelButton.style.display = "inline-block";
 
-            downloadButton.textContent =
-                "⏳ Téléchargement...";
-
-            downloadButton.classList.add(
-                "loading"
-            );
-
-        }
-
-
-        progress.style.display =
-            "block";
-
-        progressBar.style.width =
-            "0%";
+        progressBar.style.width = "0%";
 
         progressText.textContent =
             "⏳ Préparation du téléchargement...";
 
-        cancelButton.style.display =
-            "inline-block";
-
-
-        let response;
-
-
-        try {
-
-            response =
-                await fetch(url, {
-                    signal:
-                        downloadController.signal
-                });
-
-        }
-
-        catch (fetchError) {
-
-            console.warn(
-                "Fetch bloqué, téléchargement direct :",
-                fetchError
-            );
-
-
-            const directLink =
-                document.createElement(
-                    "a"
-                );
-
-            directLink.href =
-                url;
-
-            directLink.download =
-                fileName;
-
-            directLink.target =
-                "_blank";
-
-            document.body.appendChild(
-                directLink
-            );
-
-            directLink.click();
-
-            directLink.remove();
-
-
-            progressBar.style.width =
-                "100%";
-
-            progressText.textContent =
-                "✅ Téléchargement lancé !";
-
-
-            setTimeout(() => {
-
-                progress.style.display =
-                    "none";
-
-            }, 3000);
-
-
-            if (downloadButton) {
-
-                downloadButton.disabled =
-                    false;
-
-                downloadButton.textContent =
-                    "⬇️ Télécharger la vidéo";
-
-                downloadButton.classList.remove(
-                    "loading"
-                );
-
+        const response = await fetch(
+            "/api/download?url=" +
+            encodeURIComponent(url),
+            {
+                signal: downloadController.signal
             }
-
-
-            cancelButton.style.display =
-                "none";
-
-            downloadController =
-                null;
-
-            return;
-
-        }
-
+        );
 
         if (!response.ok) {
-
             throw new Error(
-                "Impossible de télécharger la vidéo."
+                "Impossible de télécharger le fichier."
             );
-
         }
-
 
         const total =
             Number(
-                response.headers.get(
-                    "content-length"
-                )
+                response.headers.get("content-length")
             ) || 0;
 
-
-        let loaded = 0;
+        if (!response.body) {
+            throw new Error(
+                "Le serveur n'a envoyé aucun fichier."
+            );
+        }
 
         const reader =
             response.body.getReader();
 
         const chunks = [];
 
+        let loaded = 0;
 
         while (true) {
 
             const {
                 done,
                 value
-            } =
-                await reader.read();
-
+            } = await reader.read();
 
             if (done) {
                 break;
             }
 
-
             chunks.push(value);
 
             loaded += value.length;
 
+            const now = Date.now();
+
+            const elapsed =
+                (now - startTime) / 1000;
+
+            const currentElapsed =
+                (now - lastTime) / 1000;
+
+            const bytesSinceLast =
+                loaded - lastLoaded;
+
+            let speed = 0;
+
+            if (currentElapsed > 0) {
+                speed =
+                    bytesSinceLast /
+                    currentElapsed;
+            }
+
+            lastTime = now;
+            lastLoaded = loaded;
+
+            const loadedMB =
+                loaded /
+                1024 /
+                1024;
+
+            const speedMB =
+                speed /
+                1024 /
+                1024;
 
             if (total > 0) {
 
                 const percent =
                     Math.round(
-                        (loaded / total) *
-                        100
+                        (loaded / total) * 100
                     );
 
+                const totalMB =
+                    total /
+                    1024 /
+                    1024;
+
+                let remainingText =
+                    "Calcul...";
+
+                if (speed > 0) {
+
+                    const remainingBytes =
+                        total - loaded;
+
+                    const remainingSeconds =
+                        remainingBytes / speed;
+
+                    if (
+                        remainingSeconds < 60
+                    ) {
+
+                        remainingText =
+                            Math.ceil(
+                                remainingSeconds
+                            ) +
+                            " s restantes";
+
+                    } else {
+
+                        remainingText =
+                            Math.ceil(
+                                remainingSeconds / 60
+                            ) +
+                            " min restantes";
+
+                    }
+
+                }
 
                 progressBar.style.width =
                     percent + "%";
 
-
                 progressText.textContent =
-                    "⏳ Téléchargement : " +
+                    "⬇️ " +
                     percent +
-                    "%";
+                    "% — " +
+                    loadedMB.toFixed(1) +
+                    " / " +
+                    totalMB.toFixed(1) +
+                    " MB — " +
+                    speedMB.toFixed(1) +
+                    " MB/s — " +
+                    remainingText;
 
-            }
+            } else {
 
-            else {
+                progressBar.style.width =
+                    "100%";
 
                 progressText.textContent =
-                    "⏳ Téléchargement : " +
-                    (
-                        loaded /
-                        1024 /
-                        1024
-                    ).toFixed(1) +
-                    " MB";
+                    "⬇️ " +
+                    loadedMB.toFixed(1) +
+                    " MB — " +
+                    speedMB.toFixed(1) +
+                    " MB/s";
 
             }
 
         }
 
+        const contentType =
+            response.headers.get(
+                "content-type"
+            ) ||
+            "video/mp4";
 
         const blob =
             new Blob(
                 chunks,
                 {
-                    type:
-                        response.headers.get(
-                            "content-type"
-                        ) ||
-                        "video/mp4"
+                    type: contentType
                 }
             );
 
-
         const downloadUrl =
-            URL.createObjectURL(
-                blob
-            );
-
+            URL.createObjectURL(blob);
 
         const link =
-            document.createElement(
-                "a"
-            );
+            document.createElement("a");
 
+        link.href = downloadUrl;
+        link.download = fileName;
 
-        link.href =
-            downloadUrl;
-
-        link.download =
-            fileName;
-
-
-        document.body.appendChild(
-            link
-        );
+        document.body.appendChild(link);
 
         link.click();
 
         link.remove();
 
+        URL.revokeObjectURL(downloadUrl);
 
-        URL.revokeObjectURL(
-            downloadUrl
-        );
-
-
-        progressBar.style.width =
-            "100%";
+        progressBar.style.width = "100%";
 
         progressText.textContent =
             "✅ Téléchargement terminé !";
 
+        downloadButton.disabled = false;
 
-        if (downloadButton) {
+        downloadButton.textContent =
+            "⬇️ Télécharger la vidéo";
 
-            downloadButton.disabled =
-                false;
+        downloadButton.classList.remove(
+            "loading"
+        );
 
-            downloadButton.textContent =
-                "⬇️ Télécharger la vidéo";
+        cancelButton.style.display =
+            "none";
 
-            downloadButton.classList.remove(
-                "loading"
-            );
-
-        }
-
+        downloadController = null;
 
         setTimeout(() => {
 
             progress.style.display =
                 "none";
 
-        }, 3000);
-
-
-        cancelButton.style.display =
-            "none";
-
-        downloadController =
-            null;
+        }, 4000);
 
     }
 
     catch (error) {
 
         if (
-            error.name ===
-            "AbortError"
+            error.name === "AbortError"
         ) {
 
             progressText.textContent =
                 "❌ Téléchargement annulé.";
 
-        }
+        } else {
 
-        else {
-
-            console.error(
-                error
-            );
+            console.error(error);
 
             progressText.textContent =
-                "❌ Erreur pendant le téléchargement.";
-
+                "❌ " +
+                error.message;
         }
 
+        downloadButton.disabled = false;
 
-        if (downloadButton) {
+        downloadButton.textContent =
+            "⬇️ Télécharger la vidéo";
 
-            downloadButton.disabled =
-                false;
-
-            downloadButton.textContent =
-                "⬇️ Télécharger la vidéo";
-
-            downloadButton.classList.remove(
-                "loading"
-            );
-
-        }
-
+        downloadButton.classList.remove(
+            "loading"
+        );
 
         cancelButton.style.display =
             "none";
 
-        downloadController =
-            null;
+        downloadController = null;
 
     }
 
 }
+
+
 
 
 /* =========================
