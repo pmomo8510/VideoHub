@@ -3,50 +3,64 @@
 <html lang="fr">
 
 <head>
-
-    <meta name="google-site-verification" content="HEwyfeWZ55_gNVec8eLn670gckXtR08lQ0adsjPDbd0" />
-    
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO -->
-    <title>VideoHub — Télécharger des vidéos facilement</title>
+    <meta name="google-site-verification"
+        content="HEwyfeWZ55_gNVec8eLn670gckXtR08lQ0adsjPDbd0">
 
-    <meta
-        name="description"
-        content="VideoHub permet d'analyser et télécharger facilement des vidéos à partir de liens compatibles."
-    >
+    <title>VideoHub — Analyse et téléchargement de vidéos</title>
 
-    <meta
-        name="keywords"
-        content="VideoHub, télécharger vidéo, téléchargement vidéo, YouTube, TikTok, X, Snapchat"
-    >
+    <meta name="description"
+        content="VideoHub est un outil simple et rapide pour analyser des liens vidéo et télécharger les vidéos compatibles.">
+
+    <meta name="keywords"
+        content="VideoHub, télécharger vidéo, analyse vidéo, YouTube, TikTok, X, Twitter, Snapchat">
 
     <meta name="robots" content="index, follow">
 
-    <meta name="theme-color" content="#111827">
+    <link rel="canonical"
+        href="https://videohub-nal7.onrender.com/">
 
-    <!-- Open Graph -->
-    <meta
-        property="og:title"
-        content="VideoHub — Télécharger des vidéos"
-    >
+    <meta property="og:title"
+        content="VideoHub — Analyse et téléchargement de vidéos">
 
-    <meta
-        property="og:description"
-        content="Analysez vos liens vidéo et utilisez les fonctionnalités de VideoHub."
-    >
+    <meta property="og:description"
+        content="Analyse tes liens vidéo rapidement avec VideoHub.">
 
-    <meta
-        property="og:type"
-        content="website"
-    >
+    <meta property="og:type" content="website">
+
+    <meta property="og:url"
+        content="https://videohub-nal7.onrender.com/">
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+
+    <!-- MONETAG -->
+    <script
+        src="https://quge5.com/88/tag.min.js"
+        data-zone="275053"
+        async
+        data-cfasync="false">
+    </script>
+
 
     <style>
+
+        :root {
+            --bg: #07111f;
+            --bg2: #0b1728;
+            --card: rgba(255,255,255,0.06);
+            --card-border: rgba(255,255,255,0.10);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --shadow: 0 25px 70px rgba(0,0,0,0.30);
+        }
 
         * {
             box-sizing: border-box;
@@ -60,171 +74,348 @@
 
         body {
             font-family:
+                Inter,
                 Arial,
                 Helvetica,
                 sans-serif;
 
+            color: var(--text);
+
             background:
+                radial-gradient(
+                    circle at 20% 0%,
+                    rgba(56,189,248,0.16),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(14,165,233,0.10),
+                    transparent 30%
+                ),
                 linear-gradient(
                     135deg,
-                    #0f172a,
-                    #111827,
-                    #1e293b
+                    var(--bg),
+                    var(--bg2)
                 );
-
-            color: #ffffff;
 
             min-height: 100vh;
 
             transition:
-                background 0.3s,
-                color 0.3s;
+                background .3s,
+                color .3s;
         }
 
+
+        /* =========================
+           LIGHT MODE
+        ========================= */
+
         body.light {
+            --bg: #f1f5f9;
+            --bg2: #ffffff;
+            --card: rgba(255,255,255,0.90);
+            --card-border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+
             background:
+                radial-gradient(
+                    circle at 20% 0%,
+                    rgba(56,189,248,0.13),
+                    transparent 30%
+                ),
                 linear-gradient(
                     135deg,
                     #f8fafc,
                     #e2e8f0
                 );
-
-            color: #111827;
         }
 
-        /* HEADER */
+
+        /* =========================
+           HEADER
+        ========================= */
 
         header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
             width: 100%;
 
-            padding: 18px 25px;
+            background:
+                rgba(7,17,31,0.78);
 
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
+            backdrop-filter: blur(18px);
 
             border-bottom:
                 1px solid
                 rgba(255,255,255,0.08);
+        }
 
-            backdrop-filter: blur(10px);
+        body.light header {
+            background:
+                rgba(255,255,255,0.82);
+
+            border-bottom:
+                1px solid
+                #e2e8f0;
+        }
+
+        .nav {
+            max-width: 1150px;
+
+            margin: auto;
+
+            height: 72px;
+
+            padding:
+                0 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
         }
 
         .logo {
-            font-size: 26px;
+            display: flex;
 
-            font-weight: 800;
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 25px;
+
+            font-weight: 900;
 
             letter-spacing: -1px;
         }
 
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #0ea5e9
+                );
+
+            color: #082f49;
+
+            font-size: 21px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(56,189,248,0.25);
+        }
+
         .logo span {
-            color: #38bdf8;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+
+            align-items: center;
+
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
         }
 
         .theme-button {
-            border: none;
-
-            background:
-                rgba(255,255,255,0.1);
-
-            color: white;
-
             width: 42px;
             height: 42px;
 
-            border-radius: 50%;
+            border: 1px solid var(--card-border);
+
+            border-radius: 12px;
+
+            background: var(--card);
+
+            color: var(--text);
 
             cursor: pointer;
 
             font-size: 18px;
         }
 
-        body.light .theme-button {
-            background: #cbd5e1;
 
-            color: #111827;
-        }
-
-        /* MAIN */
+        /* =========================
+           MAIN
+        ========================= */
 
         main {
-            width: 100%;
-
-            max-width: 1050px;
+            max-width: 1150px;
 
             margin: auto;
 
             padding:
-                45px 20px 70px;
+                35px 20px 70px;
         }
+
+
+        /* =========================
+           HERO
+        ========================= */
 
         .hero {
             text-align: center;
 
-            margin-bottom: 35px;
+            padding:
+                55px 10px 25px;
         }
 
-        .hero h1 {
-            font-size:
-                clamp(34px, 6vw, 62px);
+        .badge {
+            display: inline-flex;
 
-            line-height: 1.05;
+            align-items: center;
 
-            margin-bottom: 15px;
-        }
+            gap: 8px;
 
-        .hero h1 span {
-            color: #38bdf8;
-        }
+            padding:
+                8px 14px;
 
-        .hero p {
-            max-width: 680px;
+            border-radius: 999px;
 
-            margin: auto;
-
-            color: #cbd5e1;
-
-            font-size: 17px;
-
-            line-height: 1.6;
-        }
-
-        body.light .hero p {
-            color: #475569;
-        }
-
-        /* SEARCH */
-
-        .search-box {
             background:
-                rgba(255,255,255,0.08);
+                rgba(56,189,248,0.10);
 
             border:
                 1px solid
-                rgba(255,255,255,0.1);
+                rgba(56,189,248,0.20);
 
-            border-radius: 20px;
+            color: var(--primary);
 
-            padding: 12px;
+            font-size: 13px;
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+
+            margin: auto;
+
+            font-size:
+                clamp(38px, 7vw, 70px);
+
+            line-height: 1.02;
+
+            letter-spacing: -3px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            max-width: 700px;
+
+            margin:
+                20px auto 0;
+
+            color: var(--muted);
+
+            line-height: 1.7;
+
+            font-size: 17px;
+        }
+
+
+        /* =========================
+           PLATFORMS
+        ========================= */
+
+        .platforms {
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin:
+                25px 0;
+        }
+
+        .platform-chip {
+            padding:
+                8px 14px;
+
+            border-radius: 999px;
+
+            background: var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           SEARCH CARD
+        ========================= */
+
+        .search-card {
+            max-width: 900px;
+
+            margin:
+                25px auto;
+
+            padding: 10px;
+
+            border-radius: 22px;
+
+            background:
+                var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            box-shadow: var(--shadow);
 
             display: flex;
 
             gap: 10px;
-
-            max-width: 850px;
-
-            margin:
-                0 auto 30px;
-
-            box-shadow:
-                0 20px 50px
-                rgba(0,0,0,0.25);
         }
 
-        .search-box input {
+        .search-card input {
             flex: 1;
 
             min-width: 0;
@@ -233,67 +424,72 @@
 
             outline: none;
 
-            background:
-                rgba(0,0,0,0.2);
+            border-radius: 14px;
 
-            color: white;
+            background:
+                rgba(0,0,0,0.18);
+
+            color: var(--text);
 
             padding:
-                17px 18px;
-
-            border-radius: 12px;
+                18px;
 
             font-size: 16px;
         }
 
-        .search-box input::placeholder {
-            color: #94a3b8;
+        body.light .search-card input {
+            background: #f8fafc;
         }
 
-        body.light .search-box input {
-            background: #ffffff;
-
-            color: #111827;
+        .search-card input::placeholder {
+            color: var(--muted);
         }
 
         .analyze-button {
             border: none;
 
-            background: #38bdf8;
+            border-radius: 14px;
+
+            padding:
+                0 28px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #0ea5e9
+                );
 
             color: #082f49;
 
-            font-weight: 800;
-
-            padding:
-                0 25px;
-
-            border-radius: 12px;
+            font-weight: 900;
 
             cursor: pointer;
 
-            font-size: 15px;
-
-            transition:
-                transform 0.2s,
-                opacity 0.2s;
+            transition: .2s;
         }
 
         .analyze-button:hover {
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
 
-            opacity: 0.9;
+            box-shadow:
+                0 10px 30px
+                rgba(56,189,248,0.25);
         }
 
         .analyze-button:disabled {
-            opacity: 0.5;
+            opacity: .5;
 
             cursor: wait;
 
             transform: none;
         }
 
-        /* AD */
+
+        /* =========================
+           ADS
+        ========================= */
 
         .ad-container {
             width: 100%;
@@ -309,67 +505,78 @@
 
             justify-content: center;
 
-            border-radius: 15px;
+            border-radius: 16px;
+
+            color: var(--muted);
+
+            font-size: 11px;
 
             background:
-                rgba(255,255,255,0.04);
+                rgba(255,255,255,0.025);
 
-            color: #64748b;
-
-            font-size: 12px;
+            border:
+                1px dashed
+                rgba(148,163,184,0.18);
         }
 
-        /* RESULT */
+
+        /* =========================
+           RESULT
+        ========================= */
 
         #result {
             display: none;
 
-            background:
-                rgba(255,255,255,0.08);
+            max-width: 900px;
 
-            border:
-                1px solid
-                rgba(255,255,255,0.1);
-
-            border-radius: 20px;
+            margin:
+                30px auto;
 
             padding: 25px;
 
-            margin-top: 20px;
+            border-radius: 22px;
 
-            box-shadow:
-                0 15px 40px
-                rgba(0,0,0,0.2);
+            background: var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            box-shadow: var(--shadow);
         }
 
-        body.light #result {
-            background: white;
+        .result-header {
+            display: flex;
 
-            border-color: #e2e8f0;
-        }
+            justify-content: space-between;
 
-        .result-title {
-            font-size: 22px;
+            align-items: center;
+
+            gap: 15px;
 
             margin-bottom: 20px;
         }
 
+        .result-header h2 {
+            font-size: 22px;
+        }
+
         .platform {
-            display: inline-block;
+            display: inline-flex;
 
             padding:
                 7px 12px;
 
-            border-radius: 20px;
+            border-radius: 999px;
 
             background:
-                rgba(56,189,248,0.15);
+                rgba(56,189,248,0.12);
 
-            color: #38bdf8;
+            color: var(--primary);
 
-            font-weight: bold;
+            font-size: 13px;
 
-            margin-bottom: 20px;
+            font-weight: 800;
         }
 
         .video-container {
@@ -379,66 +586,87 @@
 
             overflow: hidden;
 
-            border-radius: 15px;
-
-            margin-bottom: 20px;
+            border-radius: 17px;
 
             background: #000;
+
+            margin-bottom: 18px;
         }
 
-        .video-container iframe {
+        .video-container iframe,
+        .video-container video {
             width: 100%;
             height: 100%;
+
             border: none;
+        }
+
+        .video-container video {
+            object-fit: contain;
         }
 
         .download-button {
             width: 100%;
 
-            padding: 16px;
+            padding: 17px;
 
             border: none;
 
-            border-radius: 12px;
+            border-radius: 13px;
 
-            background: #22c55e;
+            background:
+                linear-gradient(
+                    135deg,
+                    #22c55e,
+                    #16a34a
+                );
 
             color: white;
 
             font-size: 16px;
 
-            font-weight: 800;
+            font-weight: 900;
 
             cursor: pointer;
 
-            transition:
-                transform 0.2s,
-                opacity 0.2s;
+            transition: .2s;
         }
 
         .download-button:hover {
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
 
-            opacity: 0.9;
+            box-shadow:
+                0 10px 30px
+                rgba(34,197,94,0.18);
         }
 
-        /* PROGRESS */
+        .download-button:disabled {
+            opacity: .5;
+
+            cursor: wait;
+        }
+
+
+        /* =========================
+           PROGRESS
+        ========================= */
 
         #downloadProgress {
             display: none;
 
-            margin-top: 20px;
+            margin-top: 18px;
         }
 
         .progress-wrapper {
             width: 100%;
 
-            height: 14px;
+            height: 12px;
 
             background:
-                rgba(255,255,255,0.1);
+                rgba(148,163,184,0.15);
 
-            border-radius: 20px;
+            border-radius: 999px;
 
             overflow: hidden;
         }
@@ -448,9 +676,15 @@
 
             height: 100%;
 
-            background: #38bdf8;
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--primary),
+                    #0ea5e9
+                );
 
-            transition: width 0.2s;
+            transition:
+                width .2s;
         }
 
         #progressText {
@@ -458,35 +692,38 @@
 
             text-align: center;
 
-            margin-top: 10px;
+            margin-top: 9px;
 
-            color: #cbd5e1;
+            color: var(--muted);
 
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .cancel-button {
             display: block;
 
             margin:
-                12px auto 0;
+                10px auto 0;
 
             border: none;
 
-            background:
-                #ef4444;
+            border-radius: 9px;
 
-            color: white;
+            background:
+                rgba(239,68,68,0.12);
+
+            color: #ef4444;
 
             padding:
-                9px 18px;
-
-            border-radius: 8px;
+                8px 15px;
 
             cursor: pointer;
         }
 
-        /* STATS */
+
+        /* =========================
+           STATS
+        ========================= */
 
         .stats {
             display: grid;
@@ -496,31 +733,30 @@
 
             gap: 15px;
 
-            margin:
-                35px auto;
+            max-width: 900px;
 
-            max-width: 850px;
+            margin:
+                30px auto;
         }
 
         .stat {
-            background:
-                rgba(255,255,255,0.07);
+            padding: 23px;
+
+            border-radius: 18px;
+
+            background: var(--card);
 
             border:
                 1px solid
-                rgba(255,255,255,0.08);
-
-            padding: 22px;
-
-            border-radius: 16px;
+                var(--card-border);
 
             text-align: center;
         }
 
-        body.light .stat {
-            background: white;
+        .stat-icon {
+            font-size: 22px;
 
-            border-color: #e2e8f0;
+            margin-bottom: 8px;
         }
 
         .stat-number {
@@ -528,32 +764,169 @@
 
             font-size: 30px;
 
-            font-weight: 800;
+            font-weight: 900;
 
-            color: #38bdf8;
+            color: var(--primary);
 
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            color: #94a3b8;
+            color: var(--muted);
 
             font-size: 13px;
         }
 
-        /* HISTORY */
+
+        /* =========================
+           SECTION
+        ========================= */
 
         .section {
-            margin-top: 40px;
+            margin-top: 55px;
         }
 
-        .section h2 {
+        .section-heading {
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+        .section-heading h2 {
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           HOW IT WORKS
+        ========================= */
+
+        .steps {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .step {
+            padding: 25px;
+
+            border-radius: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+        }
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                rgba(56,189,248,0.12);
+
+            color: var(--primary);
+
+            font-weight: 900;
+
             margin-bottom: 15px;
-
-            font-size: 25px;
         }
+
+        .step h3 {
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================
+           FEATURES
+        ========================= */
+
+        .features {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .feature {
+            padding: 24px;
+
+            border-radius: 18px;
+
+            background: var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+
+            transition: .2s;
+        }
+
+        .feature:hover {
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(56,189,248,0.35);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+
+            margin-bottom: 12px;
+        }
+
+        .feature h3 {
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            color: var(--muted);
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           HISTORY
+        ========================= */
 
         .history {
+            max-width: 900px;
+
+            margin: auto;
+
             display: flex;
 
             flex-direction: column;
@@ -566,254 +939,374 @@
 
             align-items: center;
 
-            justify-content: space-between;
+            gap: 15px;
 
-            gap: 10px;
+            padding: 15px;
 
-            padding:
-                15px;
+            border-radius: 13px;
 
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,0.06);
+            background: var(--card);
 
             border:
                 1px solid
-                rgba(255,255,255,0.08);
+                var(--card-border);
         }
 
-        body.light .history-item {
-            background: white;
+        .history-icon {
+            width: 38px;
+            height: 38px;
 
-            border-color: #e2e8f0;
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background:
+                rgba(56,189,248,0.10);
         }
 
         .history-url {
+            flex: 1;
+
+            min-width: 0;
+
             overflow: hidden;
 
             text-overflow: ellipsis;
 
             white-space: nowrap;
 
-            color: #cbd5e1;
+            color: var(--muted);
 
             font-size: 14px;
         }
 
-        body.light .history-url {
-            color: #475569;
-        }
-
         .history-button {
+            flex-shrink: 0;
+
             border: none;
 
-            background: #38bdf8;
-
-            color: #082f49;
-
-            font-weight: bold;
+            border-radius: 9px;
 
             padding:
-                8px 12px;
+                9px 13px;
 
-            border-radius: 8px;
+            background:
+                rgba(56,189,248,0.12);
+
+            color: var(--primary);
+
+            font-weight: 700;
 
             cursor: pointer;
-
-            flex-shrink: 0;
         }
 
         .clear-history {
+            display: block;
+
+            margin:
+                15px auto 0;
+
             border: none;
 
-            background:
-                transparent;
+            background: transparent;
 
             color: #ef4444;
 
             cursor: pointer;
+        }
+
+
+        /* =========================
+           FAQ
+        ========================= */
+
+        .faq {
+            max-width: 900px;
+
+            margin: auto;
+        }
+
+        details {
+            margin-bottom: 10px;
+
+            padding: 17px 19px;
+
+            border-radius: 13px;
+
+            background: var(--card);
+
+            border:
+                1px solid
+                var(--card-border);
+        }
+
+        summary {
+            cursor: pointer;
+
+            font-weight: 700;
+        }
+
+        details p {
+            color: var(--muted);
+
+            line-height: 1.6;
+
+            font-size: 14px;
 
             margin-top: 12px;
         }
 
-        /* INFO */
 
-        .info-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
-            gap: 15px;
-        }
-
-        .info-card {
-            padding: 22px;
-
-            border-radius: 16px;
-
-            background:
-                rgba(255,255,255,0.06);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.08);
-        }
-
-        body.light .info-card {
-            background: white;
-
-            border-color: #e2e8f0;
-        }
-
-        .info-card h3 {
-            margin-bottom: 10px;
-        }
-
-        .info-card p {
-            color: #94a3b8;
-
-            line-height: 1.5;
-
-            font-size: 14px;
-        }
-
-        /* FOOTER */
+        /* =========================
+           FOOTER
+        ========================= */
 
         footer {
-            text-align: center;
+            margin-top: 60px;
 
             padding:
-                30px 20px;
+                35px 20px;
+
+            text-align: center;
 
             border-top:
                 1px solid
-                rgba(255,255,255,0.08);
+                var(--card-border);
 
-            color: #94a3b8;
+            color: var(--muted);
 
             font-size: 13px;
         }
 
-        /* MOBILE */
+        footer strong {
+            color: var(--primary);
+        }
 
-        @media (max-width: 700px) {
 
-            header {
-                padding:
-                    15px;
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 750px) {
+
+            .nav-links {
+                display: none;
             }
 
             main {
                 padding:
-                    30px 15px 50px;
+                    15px 14px 50px;
             }
 
-            .search-box {
+            .hero {
+                padding-top: 40px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .search-card {
                 flex-direction: column;
             }
 
+            .search-card input {
+                width: 100%;
+            }
+
             .analyze-button {
-                padding: 15px;
+                min-height: 52px;
             }
 
-            .stats {
+            .stats,
+            .steps,
+            .features {
                 grid-template-columns: 1fr;
             }
 
-            .info-grid {
-                grid-template-columns: 1fr;
+            .result-header {
+                align-items: flex-start;
+
+                flex-direction: column;
             }
 
             .history-item {
                 align-items: flex-start;
-                flex-direction: column;
             }
 
             .history-button {
-                width: 100%;
+                align-self: center;
             }
         }
 
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
 
-    <div class="logo">
-        Video<span>Hub</span>
-    </div>
+    <div class="nav">
 
-    <button
-        class="theme-button"
-        onclick="toggleTheme()"
-        title="Changer le thème"
-    >
-        🌙
-    </button>
+        <div class="logo">
 
-</header>
+            <div class="logo-icon">
+                ▶
+            </div>
+
+            Video<span>Hub</span>
+
+        </div>
 
 
-<main>
+        <nav class="nav-links">
 
-    <section class="hero">
+            <a href="#accueil">
+                Accueil
+            </a>
 
-        <h1>
-            Télécharge tes vidéos
-            <span>facilement</span>
-        </h1>
+            <a href="#fonctionnalites">
+                Fonctionnalités
+            </a>
 
-        <p>
-            Colle un lien vidéo, analyse-le et utilise les
-            fonctionnalités disponibles sur VideoHub.
-        </p>
+            <a href="#historique">
+                Historique
+            </a>
 
-    </section>
+            <a href="#faq">
+                FAQ
+            </a>
 
+        </nav>
 
-    <div class="search-box">
-
-        <input
-            id="videoUrl"
-            type="url"
-            placeholder="Colle ton lien vidéo ici..."
-            autocomplete="off"
-        >
 
         <button
-            id="analyzeButton"
-            class="analyze-button"
-            onclick="analyzeVideo()"
+            class="theme-button"
+            onclick="toggleTheme()"
+            title="Changer le thème"
         >
-            Analyser
+            🌙
         </button>
 
     </div>
 
+</header>
 
-    <!-- ESPACE PUBLICITAIRE MONETAG -->
 
-    <div class="ad-container">
+<main id="accueil">
 
-        Publicité
 
-        <!--
-        Place ici ton code publicitaire Monetag.
-        -->
+<!-- =========================
+     HERO
+========================= -->
 
+<section class="hero">
+
+    <div class="badge">
+        ⚡ Simple • Rapide • Gratuit
     </div>
 
 
-    <!-- RESULTAT -->
+    <h1>
 
-    <section id="result">
+        Ton lien vidéo.
+        <span>Ton téléchargement.</span>
 
-        <h2 class="result-title">
-            Résultat
+    </h1>
+
+
+    <p>
+
+        Analyse rapidement tes liens vidéo
+        avec VideoHub et utilise les options
+        disponibles pour télécharger tes contenus compatibles.
+
+    </p>
+
+
+    <div class="platforms">
+
+        <div class="platform-chip">
+            ▶ YouTube
+        </div>
+
+        <div class="platform-chip">
+            ♪ TikTok
+        </div>
+
+        <div class="platform-chip">
+            𝕏 X / Twitter
+        </div>
+
+        <div class="platform-chip">
+            👻 Snapchat
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SEARCH
+========================= -->
+
+<div class="search-card">
+
+    <input
+        id="videoUrl"
+        type="url"
+        placeholder="Colle ton lien vidéo ici..."
+        autocomplete="off"
+    >
+
+
+    <button
+        id="analyzeButton"
+        class="analyze-button"
+        onclick="analyzeVideo()"
+    >
+
+        🔍 Analyser
+
+    </button>
+
+</div>
+
+
+<!-- =========================
+     PUBLICITE
+========================= -->
+
+<div class="ad-container">
+
+    Publicité
+
+</div>
+
+
+<!-- =========================
+     RESULT
+========================= -->
+
+<section id="result">
+
+    <div class="result-header">
+
+        <h2>
+            🎬 Résultat de l'analyse
         </h2>
 
         <div
@@ -823,198 +1316,509 @@
             Plateforme
         </div>
 
-        <div
-            id="videoContainer"
-            class="video-container"
-        ></div>
+    </div>
+
+
+    <div
+        id="videoContainer"
+        class="video-container"
+    ></div>
+
+
+    <button
+        id="downloadButton"
+        class="download-button"
+        onclick="startDownload()"
+    >
+
+        ⬇️ Télécharger la vidéo
+
+    </button>
+
+
+    <div id="downloadProgress">
+
+        <div class="progress-wrapper">
+
+            <div id="progressBar"></div>
+
+        </div>
+
+
+        <span id="progressText">
+            0%
+        </span>
+
 
         <button
-            id="downloadButton"
-            class="download-button"
-            onclick="startDownload()"
+            class="cancel-button"
+            onclick="cancelDownload()"
         >
-            ⬇️ Télécharger
+
+            ✕ Annuler le téléchargement
+
         </button>
 
+    </div>
 
-        <div id="downloadProgress">
+</section>
 
-            <div class="progress-wrapper">
 
-                <div id="progressBar"></div>
+<!-- =========================
+     STATS
+========================= -->
 
+<section class="stats">
+
+    <div class="stat">
+
+        <div class="stat-icon">
+            ⬇️
+        </div>
+
+        <span
+            id="downloadCount"
+            class="stat-number"
+        >
+            0
+        </span>
+
+        <span class="stat-label">
+            Téléchargements
+        </span>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">
+            🔎
+        </div>
+
+        <span
+            id="analysisCount"
+            class="stat-number"
+        >
+            0
+        </span>
+
+        <span class="stat-label">
+            Analyses
+        </span>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="stat-icon">
+            🔗
+        </div>
+
+        <span
+            id="historyCount"
+            class="stat-number"
+        >
+            0
+        </span>
+
+        <span class="stat-label">
+            Liens enregistrés
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HOW IT WORKS
+========================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <h2>
+            Comment ça marche ?
+        </h2>
+
+        <p>
+            Trois étapes simples pour utiliser VideoHub.
+        </p>
+
+    </div>
+
+
+    <div class="steps">
+
+
+        <div class="step">
+
+            <div class="step-number">
+                1
             </div>
 
-            <span id="progressText">
-                0%
-            </span>
+            <h3>
+                Colle ton lien
+            </h3>
 
-            <button
-                class="cancel-button"
-                onclick="cancelDownload()"
-            >
-                Annuler
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- STATISTIQUES -->
-
-    <section class="stats">
-
-        <div class="stat">
-
-            <span
-                id="downloadCount"
-                class="stat-number"
-            >
-                0
-            </span>
-
-            <span class="stat-label">
-                Téléchargements
-            </span>
+            <p>
+                Copie l'URL de ta vidéo et
+                colle-la dans la barre de recherche.
+            </p>
 
         </div>
 
 
-        <div class="stat">
+        <div class="step">
 
-            <span
-                id="analysisCount"
-                class="stat-number"
-            >
-                0
-            </span>
+            <div class="step-number">
+                2
+            </div>
 
-            <span class="stat-label">
-                Analyses
-            </span>
+            <h3>
+                Analyse
+            </h3>
+
+            <p>
+                VideoHub analyse ton lien et
+                détecte automatiquement la plateforme.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                3
+            </div>
+
+            <h3>
+                Télécharge
+            </h3>
+
+            <p>
+                Lorsque le téléchargement est disponible,
+                utilise le bouton pour récupérer ton fichier.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FEATURES
+========================= -->
+
+<section
+    class="section"
+    id="fonctionnalites"
+>
+
+    <div class="section-heading">
+
+        <h2>
+            Pourquoi VideoHub ?
+        </h2>
+
+        <p>
+            Une interface pensée pour être simple et rapide.
+        </p>
+
+    </div>
+
+
+    <div class="features">
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                ⚡
+            </div>
+
+            <h3>
+                Rapide
+            </h3>
+
+            <p>
+                Une interface légère pour analyser
+                rapidement tes liens.
+            </p>
 
         </div>
 
 
-        <div class="stat">
+        <div class="feature">
 
-            <span
-                id="historyCount"
-                class="stat-number"
-            >
-                0
-            </span>
+            <div class="feature-icon">
+                📱
+            </div>
 
-            <span class="stat-label">
-                Liens enregistrés
-            </span>
+            <h3>
+                Compatible mobile
+            </h3>
+
+            <p>
+                Utilise VideoHub sur ordinateur,
+                tablette ou téléphone.
+            </p>
 
         </div>
 
-    </section>
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🔗
+            </div>
+
+            <h3>
+                Plusieurs plateformes
+            </h3>
+
+            <p>
+                VideoHub reconnaît notamment
+                YouTube, TikTok, X et Snapchat.
+            </p>
+
+        </div>
 
 
-    <!-- HISTORIQUE -->
+        <div class="feature">
 
-    <section class="section">
+            <div class="feature-icon">
+                📊
+            </div>
+
+            <h3>
+                Statistiques
+            </h3>
+
+            <p>
+                Consulte tes analyses,
+                téléchargements et liens enregistrés.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🕘
+            </div>
+
+            <h3>
+                Historique
+            </h3>
+
+            <p>
+                Les cinq derniers liens analysés
+                peuvent être retrouvés facilement.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-icon">
+                🌓
+            </div>
+
+            <h3>
+                Mode clair et sombre
+            </h3>
+
+            <p>
+                Choisis l'apparence qui te convient
+                et conserve ton choix.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PUBLICITE
+========================= -->
+
+<div class="ad-container">
+
+    Publicité
+
+</div>
+
+
+<!-- =========================
+     HISTORIQUE
+========================= -->
+
+<section
+    class="section"
+    id="historique"
+>
+
+    <div class="section-heading">
 
         <h2>
             📜 Historique
         </h2>
 
-        <div
-            id="history"
-            class="history"
-        ></div>
-
-        <button
-            class="clear-history"
-            onclick="clearHistory()"
-        >
-            Effacer l'historique
-        </button>
-
-    </section>
-
-
-    <!-- INFORMATIONS -->
-
-    <section class="section">
-
-        <h2>
-            Pourquoi utiliser VideoHub ?
-        </h2>
-
-        <div class="info-grid">
-
-            <div class="info-card">
-
-                <h3>
-                    ⚡ Rapide
-                </h3>
-
-                <p>
-                    Analyse rapidement tes liens vidéo
-                    grâce à une interface simple.
-                </p>
-
-            </div>
-
-
-            <div class="info-card">
-
-                <h3>
-                    📱 Compatible mobile
-                </h3>
-
-                <p>
-                    VideoHub est conçu pour fonctionner
-                    sur ordinateur, tablette et téléphone.
-                </p>
-
-            </div>
-
-
-            <div class="info-card">
-
-                <h3>
-                    🔗 Plusieurs plateformes
-                </h3>
-
-                <p>
-                    VideoHub détecte notamment YouTube,
-                    TikTok, X/Twitter et Snapchat.
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- DEUXIÈME PUBLICITÉ -->
-
-    <div class="ad-container">
-
-        Publicité
-
-        <!--
-        Deuxième emplacement Monetag.
-        -->
+        <p>
+            Tes cinq derniers liens analysés.
+        </p>
 
     </div>
+
+
+    <div
+        id="history"
+        class="history"
+    ></div>
+
+
+    <button
+        class="clear-history"
+        onclick="clearHistory()"
+    >
+
+        Effacer l'historique
+
+    </button>
+
+</section>
+
+
+<!-- =========================
+     FAQ
+========================= -->
+
+<section
+    class="section"
+    id="faq"
+>
+
+    <div class="section-heading">
+
+        <h2>
+            ❓ Questions fréquentes
+        </h2>
+
+        <p>
+            Quelques informations sur VideoHub.
+        </p>
+
+    </div>
+
+
+    <div class="faq">
+
+
+        <details>
+
+            <summary>
+                Qu'est-ce que VideoHub ?
+            </summary>
+
+            <p>
+                VideoHub est un outil web permettant
+                d'analyser des liens vidéo et de proposer
+                les fonctionnalités disponibles pour ces liens.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Quelles plateformes sont détectées ?
+            </summary>
+
+            <p>
+                VideoHub détecte notamment YouTube,
+                TikTok, X/Twitter et Snapchat.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Est-ce que l'historique est sauvegardé ?
+            </summary>
+
+            <p>
+                L'historique affiché par VideoHub est
+                enregistré localement dans le navigateur
+                et contient au maximum cinq liens.
+            </p>
+
+        </details>
+
+
+        <details>
+
+            <summary>
+                Puis-je utiliser VideoHub sur mon téléphone ?
+            </summary>
+
+            <p>
+                Oui. L'interface est responsive et adaptée
+                aux écrans mobiles.
+            </p>
+
+        </details>
+
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PUBLICITE
+========================= -->
+
+<div class="ad-container">
+
+    Publicité
+
+</div>
+
 
 </main>
 
 
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer>
 
-    © 2026 VideoHub — Tous droits réservés.
+    <p>
+        © 2026 <strong>VideoHub</strong>.
+        Tous droits réservés.
+    </p>
 
 </footer>
 
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
 
 <script>
 
@@ -1023,9 +1827,9 @@ let downloadController = null;
 let currentVideoUrl = "";
 
 
-// ==============================
-// COMPTEURS
-// ==============================
+/* =========================
+   COMPTEURS
+========================= */
 
 let downloadCount =
     Number(
@@ -1043,9 +1847,9 @@ let analysisCount =
     ) || 0;
 
 
-// ==============================
-// HISTORIQUE
-// ==============================
+/* =========================
+   HISTORIQUE
+========================= */
 
 let history =
     JSON.parse(
@@ -1055,9 +1859,9 @@ let history =
     ) || [];
 
 
-// ==============================
-// INITIALISATION
-// ==============================
+/* =========================
+   INITIALISATION
+========================= */
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1073,9 +1877,9 @@ document.addEventListener(
 );
 
 
-// ==============================
-// THEME
-// ==============================
+/* =========================
+   THEME
+========================= */
 
 function toggleTheme() {
 
@@ -1083,13 +1887,18 @@ function toggleTheme() {
         "light"
     );
 
-    localStorage.setItem(
-        "theme",
+
+    const theme =
         document.body.classList.contains(
             "light"
         )
             ? "light"
-            : "dark"
+            : "dark";
+
+
+    localStorage.setItem(
+        "theme",
+        theme
     );
 
 }
@@ -1102,6 +1911,7 @@ function loadTheme() {
             "theme"
         );
 
+
     if (theme === "light") {
 
         document.body.classList.add(
@@ -1113,9 +1923,9 @@ function loadTheme() {
 }
 
 
-// ==============================
-// ANALYSE
-// ==============================
+/* =========================
+   ANALYSE
+========================= */
 
 async function analyzeVideo() {
 
@@ -1124,10 +1934,12 @@ async function analyzeVideo() {
             "videoUrl"
         );
 
+
     const button =
         document.getElementById(
             "analyzeButton"
         );
+
 
     const url =
         input.value.trim();
@@ -1148,7 +1960,9 @@ async function analyzeVideo() {
 
         new URL(url);
 
-    } catch {
+    }
+
+    catch {
 
         alert(
             "Le lien n'est pas valide."
@@ -1171,7 +1985,6 @@ async function analyzeVideo() {
             await fetch(
                 "/api/analyze",
                 {
-
                     method: "POST",
 
                     headers: {
@@ -1183,7 +1996,6 @@ async function analyzeVideo() {
                         JSON.stringify({
                             url: url
                         })
-
                 }
             );
 
@@ -1207,6 +2019,7 @@ async function analyzeVideo() {
 
         analysisCount++;
 
+
         localStorage.setItem(
             "analysisCount",
             analysisCount
@@ -1224,8 +2037,9 @@ async function analyzeVideo() {
 
         updateStats();
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(error);
 
@@ -1239,14 +2053,14 @@ async function analyzeVideo() {
     button.disabled = false;
 
     button.textContent =
-        "Analyser";
+        "🔍 Analyser";
 
 }
 
 
-// ==============================
-// AFFICHER RESULTAT
-// ==============================
+/* =========================
+   RESULTAT
+========================= */
 
 function displayResult(
     data,
@@ -1284,20 +2098,16 @@ function displayResult(
         "";
 
 
-    // YouTube
-
     if (
         data.platform &&
-        data.platform.toLowerCase()
+        data.platform
+            .toLowerCase()
             .includes("youtube")
     ) {
 
         showYouTube(url);
 
     }
-
-
-    // Lien direct vidéo
 
     else if (
         data.contentType &&
@@ -1311,15 +2121,11 @@ function displayResult(
                 "video"
             );
 
+
         video.controls = true;
 
         video.src = url;
 
-        video.style.width =
-            "100%";
-
-        video.style.height =
-            "100%";
 
         videoContainer.appendChild(
             video
@@ -1336,9 +2142,9 @@ function displayResult(
 }
 
 
-// ==============================
-// YOUTUBE
-// ==============================
+/* =========================
+   YOUTUBE
+========================= */
 
 function getYouTubeId(url) {
 
@@ -1366,13 +2172,14 @@ function getYouTubeId(url) {
             )
         ) {
 
-            return parsed.searchParams.get(
-                "v"
-            );
+            return parsed.searchParams
+                .get("v");
 
         }
 
-    } catch {}
+    }
+
+    catch {}
 
     return null;
 
@@ -1402,18 +2209,19 @@ function showYouTube(url) {
 
         <iframe
             src="https://www.youtube.com/embed/${id}"
+            title="Video YouTube"
             allowfullscreen
-            loading="lazy"
-        ></iframe>
+            loading="lazy">
+        </iframe>
 
     `;
 
 }
 
 
-// ==============================
-// TELECHARGEMENT
-// ==============================
+/* =========================
+   TELECHARGEMENT
+========================= */
 
 function startDownload() {
 
@@ -1546,7 +2354,8 @@ async function downloadVideo(url) {
 
             chunks.push(value);
 
-            received += value.length;
+            received +=
+                value.length;
 
 
             if (contentLength) {
@@ -1598,10 +2407,7 @@ async function downloadVideo(url) {
             "videohub-video";
 
 
-        document.body.appendChild(
-            a
-        );
-
+        document.body.appendChild(a);
 
         a.click();
 
@@ -1625,11 +2431,16 @@ async function downloadVideo(url) {
         updateStats();
 
 
+        progressBar.style.width =
+            "100%";
+
+
         progressText.textContent =
             "Téléchargement terminé ✓";
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         if (
             error.name ===
@@ -1639,7 +2450,9 @@ async function downloadVideo(url) {
             progressText.textContent =
                 "Téléchargement annulé.";
 
-        } else {
+        }
+
+        else {
 
             console.error(error);
 
@@ -1658,36 +2471,32 @@ async function downloadVideo(url) {
 }
 
 
-// ==============================
-// ANNULER
-// ==============================
+/* =========================
+   ANNULER
+========================= */
 
 function cancelDownload() {
 
-    if (
-        downloadController
-    ) {
+    if (downloadController) {
 
         downloadController.abort();
 
-        downloadController =
-            null;
+        downloadController = null;
 
     }
 
 }
 
 
-// ==============================
-// HISTORIQUE
-// ==============================
+/* =========================
+   HISTORIQUE
+========================= */
 
 function addToHistory(url) {
 
     history =
         history.filter(
-            item =>
-                item !== url
+            item => item !== url
         );
 
 
@@ -1695,10 +2504,7 @@ function addToHistory(url) {
 
 
     history =
-        history.slice(
-            0,
-            5
-        );
+        history.slice(0, 5);
 
 
     localStorage.setItem(
@@ -1724,16 +2530,18 @@ function displayHistory() {
         "";
 
 
-    if (
-        history.length === 0
-    ) {
+    if (history.length === 0) {
 
         container.innerHTML = `
 
             <div class="history-item">
 
+                <div class="history-icon">
+                    🔗
+                </div>
+
                 <span class="history-url">
-                    Aucun lien enregistré.
+                    Aucun lien enregistré pour le moment.
                 </span>
 
             </div>
@@ -1758,6 +2566,20 @@ function displayHistory() {
 
             item.className =
                 "history-item";
+
+
+            const icon =
+                document.createElement(
+                    "div"
+                );
+
+
+            icon.className =
+                "history-icon";
+
+
+            icon.textContent =
+                "🔗";
 
 
             const text =
@@ -1791,9 +2613,11 @@ function displayHistory() {
             button.onclick =
                 function () {
 
-                    document.getElementById(
-                        "videoUrl"
-                    ).value =
+                    document
+                        .getElementById(
+                            "videoUrl"
+                        )
+                        .value =
                         url;
 
 
@@ -1802,14 +2626,11 @@ function displayHistory() {
                 };
 
 
-            item.appendChild(
-                text
-            );
+            item.appendChild(icon);
 
+            item.appendChild(text);
 
-            item.appendChild(
-                button
-            );
+            item.appendChild(button);
 
 
             container.appendChild(
@@ -1824,6 +2645,10 @@ function displayHistory() {
 
 }
 
+
+/* =========================
+   EFFACER HISTORIQUE
+========================= */
 
 function clearHistory() {
 
@@ -1851,9 +2676,9 @@ function clearHistory() {
 }
 
 
-// ==============================
-// STATS
-// ==============================
+/* =========================
+   STATISTIQUES
+========================= */
 
 function updateStats() {
 
@@ -1901,14 +2726,12 @@ function updateStats() {
 }
 
 
-// ==============================
-// ENTER
-// ==============================
+/* =========================
+   TOUCHE ENTREE
+========================= */
 
 document
-    .getElementById(
-        "videoUrl"
-    )
+    .getElementById("videoUrl")
     .addEventListener(
         "keydown",
         function (event) {
@@ -1928,5 +2751,4 @@ document
 </script>
 
 </body>
-
-</html>
+</
