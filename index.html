@@ -1,554 +1,1929 @@
+
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>VideoHub – Téléchargeur de vidéos YouTube, X et Snapchat</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description" content="VideoHub est un téléchargeur de vidéos simple et rapide. Analyse tes vidéos et liens depuis YouTube, X (Twitter) et Snapchat.">
-    <meta name="keywords" content="VideoHub, téléchargeur vidéo, télécharger vidéo, télécharger YouTube, télécharger X, télécharger Twitter, télécharger Snapchat, vidéo en ligne">
+    <!-- SEO -->
+    <title>VideoHub — Télécharger des vidéos facilement</title>
+
+    <meta
+        name="description"
+        content="VideoHub permet d'analyser et télécharger facilement des vidéos à partir de liens compatibles."
+    >
+
+    <meta
+        name="keywords"
+        content="VideoHub, télécharger vidéo, téléchargement vidéo, YouTube, TikTok, X, Snapchat"
+    >
+
     <meta name="robots" content="index, follow">
-    <meta name="author" content="VideoHub">
-    <meta name="theme-color" content="#ff1744">
 
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
+    <meta name="theme-color" content="#111827">
 
-    <meta property="og:title" content="VideoHub – Téléchargeur de vidéos">
-    <meta property="og:description" content="Analyse tes liens vidéo depuis YouTube, X et Snapchat avec VideoHub.">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="VideoHub">
+    <!-- Open Graph -->
+    <meta
+        property="og:title"
+        content="VideoHub — Télécharger des vidéos"
+    >
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:Arial,sans-serif;background:#0b0b0b;color:#fff;min-height:100vh;line-height:1.5}
-nav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;padding:16px 6%;background:rgba(16,16,16,.96);border-bottom:1px solid #222;backdrop-filter:blur(10px)}
-.nav-logo{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:bold}
-.logo-icon{width:36px;height:36px;display:flex;justify-content:center;align-items:center;background:#ff1744;border-radius:10px;box-shadow:0 5px 20px rgba(255,23,68,.25)}
-.nav-links{display:flex;gap:20px;align-items:center}
-.nav-links a{color:#aaa;text-decoration:none;font-size:14px;transition:.2s}
-.nav-links a:hover{color:#fff}
-.hero{width:92%;max-width:850px;margin:auto;padding:65px 0 45px;text-align:center}
-.main-logo{width:90px;height:90px;margin:0 auto 20px;display:flex;justify-content:center;align-items:center;background:#ff1744;border-radius:25px;font-size:42px;box-shadow:0 15px 40px rgba(255,23,68,.2)}
-h1{font-size:52px;margin-bottom:12px}
-.subtitle{color:#999;font-size:18px;margin-bottom:35px}
-.ad-container{display:none}
-.search-box{background:#151515;padding:12px;border:1px solid #292929;border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.25)}
-.input-area{display:flex;gap:10px}
-input{flex:1;padding:18px;border:1px solid transparent;border-radius:10px;background:#222;color:#fff;font-size:16px;outline:none;transition:.2s}
-input:focus{border-color:#ff1744}
-button{border:none;border-radius:10px;padding:0 25px;background:#ff1744;color:#fff;font-weight:bold;cursor:pointer;transition:.2s}
-button:hover{background:#e00032}
-.small-buttons{display:flex;justify-content:center;gap:10px;margin-top:12px}
-.small-button{padding:10px 16px;background:#292929;font-size:14px}
-.small-button:hover{background:#3a3a3a}
-#message{margin-top:25px;min-height:25px}
-.success{color:#4caf50}.error{color:#ff5252}.loading{color:#ffc107}
-.loader{width:35px;height:35px;margin:15px auto 10px;border:4px solid #292929;border-top:4px solid #ff1744;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-#result{display:none;margin-top:30px}
-.video-card{background:#171717;border:1px solid #292929;border-radius:18px;padding:25px;box-shadow:0 15px 40px rgba(0,0,0,.2)}
-.video-container{position:relative;width:100%;padding-bottom:56.25%;margin-top:20px}
-.video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px}
-.youtube-thumbnail{width:100%;max-width:480px;margin:20px auto 0;border-radius:12px;display:block}
-.action-button{display:inline-block;margin-top:20px;padding:14px 25px;background:#333;color:#fff;text-decoration:none;border-radius:10px;border:none;cursor:pointer;transition:.2s}
-.action-button:hover{background:#444;transform:translateY(-1px)}
-.download-button{display:block;width:100%;margin-top:20px;padding:15px;border:none;border-radius:10px;background:#ff1744;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:.2s}
-.download-button:hover{transform:translateY(-2px);background:#e00032}
-.download-button:active{transform:scale(.98)}
-.download-button:disabled{opacity:.6;cursor:not-allowed;transform:none}
-#cancelButton{margin-top:10px;background:#333;padding:10px 18px}
-#cancelButton:hover{background:#444}
-.download-button.loading{animation:downloadPulse 1s infinite}
-@keyframes downloadPulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
-.history-section{width:92%;max-width:850px;margin:auto;padding:30px 0 50px}
-.history-section h2{text-align:center;margin-bottom:20px}
-.history-item{display:flex;justify-content:space-between;align-items:center;background:#151515;border:1px solid #292929;padding:15px;margin-bottom:10px;border-radius:10px;transition:.2s}
-.history-item:hover{border-color:#444;transform:translateY(-1px)}
-.history-link{color:#aaa;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-decoration:none;width:100%}
-.history-link:hover{color:#fff}
-.clear-history-button{display:block;margin:20px auto 0;padding:12px 20px;background:#292929}
-.clear-history-button:hover{background:#3a3a3a}
-.platforms{width:92%;max-width:1000px;margin:auto;padding:40px 0 70px}
-.platforms h2{text-align:center;margin-bottom:30px}
-.platform-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.platform-card{background:#151515;border:1px solid #292929;border-radius:15px;padding:25px;text-align:center;transition:.2s}
-.platform-card:hover{transform:translateY(-4px);border-color:#444}
-.platform-card div{font-size:40px;margin-bottom:10px}
-.platform-card p{color:#999;font-size:14px;margin-top:8px}
-.info-section{width:92%;max-width:850px;margin:auto;padding:45px 0}
-.info-card{background:#151515;border:1px solid #292929;border-radius:18px;padding:30px;margin-bottom:20px}
-.info-card h2{margin-bottom:15px}
-.info-card h3{margin-top:20px;margin-bottom:8px}
-.info-card p{color:#aaa;margin-bottom:12px}
-.info-card ul{color:#aaa;padding-left:20px}
-.info-card li{margin-bottom:8px}
-footer{border-top:1px solid #222;padding:30px 20px;text-align:center;color:#777;background:#101010}
-.footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-bottom:15px}
-.footer-links a{color:#888;text-decoration:none;cursor:pointer}
-.footer-links a:hover{color:#fff}
-.animate-result{animation:appear .4s ease-out}
-@keyframes appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    <meta
+        property="og:description"
+        content="Analysez vos liens vidéo et utilisez les fonctionnalités de VideoHub."
+    >
 
-@media(max-width:700px){
-nav{padding:15px 4%}.nav-logo{font-size:20px}.nav-links{gap:10px;font-size:13px}.nav-links a:nth-child(2){display:none}
-h1{font-size:40px}.hero{padding-top:45px}.input-area{flex-direction:column}button{padding:17px}
-.platform-grid{grid-template-columns:repeat(2,1fr)}.history-item{display:block}.video-card{padding:18px}.info-card{padding:22px}
-}
-@media(max-width:420px){
-.nav-links a{display:none}.platform-grid{grid-template-columns:1fr}h1{font-size:34px}.subtitle{font-size:16px}
-}
-</style>
+    <meta
+        property="og:type"
+        content="website"
+    >
 
-<script src="https://quge5.com/88/tag.min.js" data-zone="275053" async data-cfasync="false"></script>
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #111827,
+                    #1e293b
+                );
+
+            color: #ffffff;
+
+            min-height: 100vh;
+
+            transition:
+                background 0.3s,
+                color 0.3s;
+        }
+
+        body.light {
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fafc,
+                    #e2e8f0
+                );
+
+            color: #111827;
+        }
+
+        /* HEADER */
+
+        header {
+            width: 100%;
+
+            padding: 18px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 26px;
+
+            font-weight: 800;
+
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .theme-button {
+            border: none;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            color: white;
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 50%;
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+        body.light .theme-button {
+            background: #cbd5e1;
+
+            color: #111827;
+        }
+
+        /* MAIN */
+
+        main {
+            width: 100%;
+
+            max-width: 1050px;
+
+            margin: auto;
+
+            padding:
+                45px 20px 70px;
+        }
+
+        .hero {
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+        .hero h1 {
+            font-size:
+                clamp(34px, 6vw, 62px);
+
+            line-height: 1.05;
+
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #38bdf8;
+        }
+
+        .hero p {
+            max-width: 680px;
+
+            margin: auto;
+
+            color: #cbd5e1;
+
+            font-size: 17px;
+
+            line-height: 1.6;
+        }
+
+        body.light .hero p {
+            color: #475569;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            border-radius: 20px;
+
+            padding: 12px;
+
+            display: flex;
+
+            gap: 10px;
+
+            max-width: 850px;
+
+            margin:
+                0 auto 30px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(0,0,0,0.25);
+        }
+
+        .search-box input {
+            flex: 1;
+
+            min-width: 0;
+
+            border: none;
+
+            outline: none;
+
+            background:
+                rgba(0,0,0,0.2);
+
+            color: white;
+
+            padding:
+                17px 18px;
+
+            border-radius: 12px;
+
+            font-size: 16px;
+        }
+
+        .search-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        body.light .search-box input {
+            background: #ffffff;
+
+            color: #111827;
+        }
+
+        .analyze-button {
+            border: none;
+
+            background: #38bdf8;
+
+            color: #082f49;
+
+            font-weight: 800;
+
+            padding:
+                0 25px;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            transition:
+                transform 0.2s,
+                opacity 0.2s;
+        }
+
+        .analyze-button:hover {
+            transform: translateY(-2px);
+
+            opacity: 0.9;
+        }
+
+        .analyze-button:disabled {
+            opacity: 0.5;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        /* AD */
+
+        .ad-container {
+            width: 100%;
+
+            min-height: 90px;
+
+            margin:
+                25px auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,0.04);
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        /* RESULT */
+
+        #result {
+            display: none;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.1);
+
+            border-radius: 20px;
+
+            padding: 25px;
+
+            margin-top: 20px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,0.2);
+        }
+
+        body.light #result {
+            background: white;
+
+            border-color: #e2e8f0;
+        }
+
+        .result-title {
+            font-size: 22px;
+
+            margin-bottom: 20px;
+        }
+
+        .platform {
+            display: inline-block;
+
+            padding:
+                7px 12px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(56,189,248,0.15);
+
+            color: #38bdf8;
+
+            font-weight: bold;
+
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            width: 100%;
+
+            aspect-ratio: 16 / 9;
+
+            overflow: hidden;
+
+            border-radius: 15px;
+
+            margin-bottom: 20px;
+
+            background: #000;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .download-button {
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: #22c55e;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s,
+                opacity 0.2s;
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+
+            opacity: 0.9;
+        }
+
+        /* PROGRESS */
+
+        #downloadProgress {
+            display: none;
+
+            margin-top: 20px;
+        }
+
+        .progress-wrapper {
+            width: 100%;
+
+            height: 14px;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        #progressBar {
+            width: 0%;
+
+            height: 100%;
+
+            background: #38bdf8;
+
+            transition: width 0.2s;
+        }
+
+        #progressText {
+            display: block;
+
+            text-align: center;
+
+            margin-top: 10px;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+        }
+
+        .cancel-button {
+            display: block;
+
+            margin:
+                12px auto 0;
+
+            border: none;
+
+            background:
+                #ef4444;
+
+            color: white;
+
+            padding:
+                9px 18px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin:
+                35px auto;
+
+            max-width: 850px;
+        }
+
+        .stat {
+            background:
+                rgba(255,255,255,0.07);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            padding: 22px;
+
+            border-radius: 16px;
+
+            text-align: center;
+        }
+
+        body.light .stat {
+            background: white;
+
+            border-color: #e2e8f0;
+        }
+
+        .stat-number {
+            display: block;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            color: #38bdf8;
+
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+        /* HISTORY */
+
+        .section {
+            margin-top: 40px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+
+            font-size: 25px;
+        }
+
+        .history {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .history-item {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            padding:
+                15px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+        body.light .history-item {
+            background: white;
+
+            border-color: #e2e8f0;
+        }
+
+        .history-url {
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+        }
+
+        body.light .history-url {
+            color: #475569;
+        }
+
+        .history-button {
+            border: none;
+
+            background: #38bdf8;
+
+            color: #082f49;
+
+            font-weight: bold;
+
+            padding:
+                8px 12px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            flex-shrink: 0;
+        }
+
+        .clear-history {
+            border: none;
+
+            background:
+                transparent;
+
+            color: #ef4444;
+
+            cursor: pointer;
+
+            margin-top: 12px;
+        }
+
+        /* INFO */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .info-card {
+            padding: 22px;
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,0.06);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+        body.light .info-card {
+            background: white;
+
+            border-color: #e2e8f0;
+        }
+
+        .info-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            color: #94a3b8;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+
+            padding:
+                30px 20px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding:
+                    15px;
+            }
+
+            main {
+                padding:
+                    30px 15px 50px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .analyze-button {
+                padding: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .history-button {
+                width: 100%;
+            }
+        }
+
+    </style>
 </head>
 
 <body>
 
-<nav>
-    <div class="nav-logo">
-        <div class="logo-icon">▶</div>
-        <span>VideoHub</span>
-    </div>
-    <div class="nav-links">
-        <a href="#home">Accueil</a>
-        <a href="#platforms">Plateformes</a>
-        <a href="#about">À propos</a>
-    </div>
-</nav>
+<header>
 
-<section class="hero" id="home">
-    <div class="main-logo">▶</div>
-    <h1>VideoHub</h1>
-    <p class="subtitle">Télécharge et analyse tes vidéos en ligne</p>
+    <div class="logo">
+        Video<span>Hub</span>
+    </div>
 
-    <div class="ad-container"><span>ESPACE PUBLICITAIRE</span></div>
+    <button
+        class="theme-button"
+        onclick="toggleTheme()"
+        title="Changer le thème"
+    >
+        🌙
+    </button>
+
+</header>
+
+
+<main>
+
+    <section class="hero">
+
+        <h1>
+            Télécharge tes vidéos
+            <span>facilement</span>
+        </h1>
+
+        <p>
+            Colle un lien vidéo, analyse-le et utilise les
+            fonctionnalités disponibles sur VideoHub.
+        </p>
+
+    </section>
+
 
     <div class="search-box">
-        <div class="input-area">
-            <input type="text" id="videoUrl" placeholder="Colle un lien vidéo..." autocomplete="off">
-            <button onclick="analyzeVideo()">ANALYSER</button>
+
+        <input
+            id="videoUrl"
+            type="url"
+            placeholder="Colle ton lien vidéo ici..."
+            autocomplete="off"
+        >
+
+        <button
+            id="analyzeButton"
+            class="analyze-button"
+            onclick="analyzeVideo()"
+        >
+            Analyser
+        </button>
+
+    </div>
+
+
+    <!-- ESPACE PUBLICITAIRE MONETAG -->
+
+    <div class="ad-container">
+
+        Publicité
+
+        <!--
+        Place ici ton code publicitaire Monetag.
+        -->
+
+    </div>
+
+
+    <!-- RESULTAT -->
+
+    <section id="result">
+
+        <h2 class="result-title">
+            Résultat
+        </h2>
+
+        <div
+            id="platform"
+            class="platform"
+        >
+            Plateforme
         </div>
-        <div class="small-buttons">
-            <button class="small-button" onclick="pasteLink()">📋 Coller</button>
-            <button class="small-button" onclick="clearLink()">🗑️ Effacer</button>
-        </div>
-    </div>
 
-    <div id="message"></div>
-    <div id="result"></div>
-</section>
+        <div
+            id="videoContainer"
+            class="video-container"
+        ></div>
 
-<div class="ad-container" style="width:92%;"><span>ESPACE PUBLICITAIRE</span></div>
+        <button
+            id="downloadButton"
+            class="download-button"
+            onclick="startDownload()"
+        >
+            ⬇️ Télécharger
+        </button>
 
-<section class="history-section">
-    <h2>📜 Derniers liens analysés</h2>
-    <div id="historyList"></div>
-    <button class="clear-history-button" onclick="clearHistory()">🗑️ Effacer l'historique</button>
-</section>
 
-<section class="platforms" id="platforms">
-    <h2>Plateformes supportées</h2>
-    <div class="platform-grid">
-        <div class="platform-card"><div>▶️</div><h3>YouTube</h3><p>Lecture intégrée</p></div>
-        <div class="platform-card"><div>🎵</div><h3>TikTok</h3><p>Détection du lien</p></div>
-        <div class="platform-card"><div>𝕏</div><h3>X / Twitter</h3><p>Détection du lien</p></div>
-        <div class="platform-card"><div>👻</div><h3>Snapchat</h3><p>Détection du lien</p></div>
-    </div>
-</section>
+        <div id="downloadProgress">
 
-<div class="ad-container" style="width:92%;"><span>ESPACE PUBLICITAIRE</span></div>
+            <div class="progress-wrapper">
 
-<section class="info-section" id="about">
-    <div class="info-card">
-        <h2>ℹ️ À propos de VideoHub</h2>
-        <p>VideoHub est un outil web conçu pour analyser différents liens vidéo depuis une interface simple et rapide.</p>
-        <p>Notre objectif est de proposer une expérience claire, moderne et facile à utiliser sur ordinateur comme sur téléphone.</p>
-    </div>
+                <div id="progressBar"></div>
 
-    <div class="info-card">
-        <h2>❓ Comment ça marche ?</h2>
-        <h3>1. Colle ton lien</h3>
-        <p>Colle l'adresse de la vidéo dans la zone prévue.</p>
-        <h3>2. Analyse le lien</h3>
-        <p>Clique sur le bouton « ANALYSER ».</p>
-        <h3>3. Consulte le résultat</h3>
-        <p>VideoHub identifie la plateforme et affiche les possibilités disponibles.</p>
-    </div>
-
-    <div class="info-card">
-        <h2>🔒 Confidentialité</h2>
-        <p>VideoHub utilise notamment le stockage local du navigateur afin de conserver l'historique récent des liens analysés.</p>
-        <p>Les données enregistrées localement peuvent être supprimées à tout moment.</p>
-    </div>
-
-    <div class="info-card">
-        <h2>📋 Conditions d'utilisation</h2>
-        <p>L'utilisateur doit utiliser VideoHub conformément aux lois applicables et aux droits des propriétaires des contenus.</p>
-        <p>L'utilisateur est responsable des liens et contenus qu'il utilise avec le service.</p>
-        <p>VideoHub ne doit pas être utilisé pour contourner des protections techniques, des restrictions d'accès ou des droits d'auteur.</p>
-    </div>
-
-    <div class="info-card">
-        <h2>📩 Contact</h2>
-        <p>Pour toute question concernant VideoHub, ajoute ici ton adresse e-mail de contact.</p>
-        <p>Exemple : <strong>contact@ton-domaine.com</strong></p>
-    </div>
-</section>
-
-<footer>
-    <div class="footer-links">
-        <a href="#home">Accueil</a>
-        <a href="#about">À propos</a>
-        <a href="#about">Confidentialité</a>
-        <a href="#about">Conditions</a>
-        <a href="#about">Contact</a>
-    </div>
-    <p>© 2026 VideoHub — Tous droits réservés.</p>
-</footer>
-
-<script>
-let downloadController = null;
-
-function cancelDownload(){
-    if(downloadController) downloadController.abort();
-}
-
-async function downloadVideo(url){
-    downloadController = new AbortController();
-
-    const progress = document.getElementById("downloadProgress");
-    const progressBar = document.getElementById("progressBar");
-    const progressText = document.getElementById("progressText");
-    const cancelButton = document.getElementById("cancelButton");
-    const downloadButton = document.querySelector(".download-button");
-    const fileName = "VideoHub_" + Date.now() + ".mp4";
-
-    try{
-        if(downloadButton){
-            downloadButton.disabled = true;
-            downloadButton.textContent = "⏳ Téléchargement...";
-            downloadButton.classList.add("loading");
-        }
-
-        progress.style.display = "block";
-        progressBar.style.width = "0%";
-        progressText.textContent = "⏳ Préparation du téléchargement...";
-        cancelButton.style.display = "inline-block";
-
-        let response;
-
-        try{
-            response = await fetch("/api/download?url=" + encodeURIComponent(url), {
-                signal: downloadController.signal
-            });
-        }catch(fetchError){
-            console.warn("Téléchargement via serveur impossible :", fetchError);
-            throw fetchError;
-        }
-
-        if(!response.ok) throw new Error("Impossible de télécharger la vidéo.");
-
-        const total = Number(response.headers.get("content-length")) || 0;
-        let loaded = 0;
-        const reader = response.body.getReader();
-        const chunks = [];
-
-        while(true){
-            const {done,value} = await reader.read();
-            if(done) break;
-
-            chunks.push(value);
-            loaded += value.length;
-
-            if(total > 0){
-                const percent = Math.round((loaded / total) * 100);
-                progressBar.style.width = percent + "%";
-                progressText.textContent = "⏳ Téléchargement : " + percent + "%";
-            }else{
-                progressText.textContent = "⏳ Téléchargement : " + (loaded/1024/1024).toFixed(1) + " MB";
-            }
-        }
-
-        const blob = new Blob(chunks, {
-            type: response.headers.get("content-type") || "video/mp4"
-        });
-
-        const downloadUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(downloadUrl);
-
-        progressBar.style.width = "100%";
-        progressText.textContent = "✅ Téléchargement terminé !";
-
-        if(downloadButton){
-            downloadButton.disabled = false;
-            downloadButton.textContent = "⬇️ Télécharger la vidéo";
-            downloadButton.classList.remove("loading");
-        }
-
-        cancelButton.style.display = "none";
-        downloadController = null;
-
-        setTimeout(() => progress.style.display = "none", 3000);
-    }catch(error){
-        progressText.textContent = error.name === "AbortError"
-            ? "❌ Téléchargement annulé."
-            : "❌ Erreur pendant le téléchargement.";
-
-        if(downloadButton){
-            downloadButton.disabled = false;
-            downloadButton.textContent = "⬇️ Télécharger la vidéo";
-            downloadButton.classList.remove("loading");
-        }
-
-        cancelButton.style.display = "none";
-        downloadController = null;
-    }
-}
-
-function getYouTubeId(url){
-    try{
-        const link = new URL(url);
-        const host = link.hostname.toLowerCase().replace("www.","");
-
-        if(host === "youtu.be") return link.pathname.substring(1).split("/")[0];
-
-        if(host === "youtube.com"){
-            if(link.pathname === "/watch") return link.searchParams.get("v");
-            if(link.pathname.startsWith("/shorts/")) return link.pathname.split("/")[2];
-            if(link.pathname.startsWith("/embed/")) return link.pathname.split("/")[2];
-        }
-    }catch(error){}
-    return null;
-}
-
-async function analyzeVideo(){
-    const input = document.getElementById("videoUrl");
-    const url = input.value.trim();
-    const message = document.getElementById("message");
-    const result = document.getElementById("result");
-
-    result.style.display = "none";
-    result.innerHTML = "";
-
-    if(!url){
-        message.className = "error";
-        message.innerHTML = "⚠️ Colle d'abord un lien.";
-        return;
-    }
-
-    message.className = "loading";
-    message.innerHTML = '<div class="loader"></div>🔍 Analyse du lien...';
-
-    try{
-        const response = await fetch("/api/analyze", {
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({url})
-        });
-
-        if(!response.ok) throw new Error("Serveur : " + response.status);
-
-        const data = await response.json();
-
-        if(!data.success){
-            message.className = "error";
-            message.innerHTML = "❌ " + data.message;
-            return;
-        }
-
-        message.className = "success";
-        message.innerHTML = "✅ " + data.platform + " détecté !";
-
-        saveHistory(data.platform,url);
-
-        if(data.platform === "YouTube") showYouTube(url);
-        else if(data.platform === "TikTok") showPlatform("🎵","TikTok",url);
-        else if(data.platform === "X / Twitter") showPlatform("𝕏","X / Twitter",url);
-        else if(data.platform === "Snapchat") showPlatform("👻","Snapchat",url);
-        else showDirectLink(url,data.contentType,data.contentLength);
-    }catch(error){
-        console.error("Erreur VideoHub :",error);
-        message.className = "error";
-        message.innerHTML = "❌ Impossible de contacter le serveur.";
-    }
-}
-
-function showYouTube(url){
-    const id = getYouTubeId(url);
-    const result = document.getElementById("result");
-
-    if(!id){
-        result.innerHTML = '<div class="video-card">❌ Lien YouTube invalide.</div>';
-        result.style.display = "block";
-        return;
-    }
-
-    const thumbnail = "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
-
-    result.innerHTML = `
-        <div class="video-card">
-            <h2>▶️ Vidéo YouTube</h2>
-            <img src="${thumbnail}" class="youtube-thumbnail" alt="Miniature YouTube">
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/${id}" title="Vidéo YouTube"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
             </div>
-            <a class="action-button" href="${url}" target="_blank" rel="noopener noreferrer">Ouvrir sur YouTube</a>
-            <button class="action-button" onclick="copyLink(${JSON.stringify(url)})">📋 Copier le lien</button>
-        </div>
-    `;
 
-    result.style.display = "block";
-    result.classList.remove("animate-result");
-    void result.offsetWidth;
-    result.classList.add("animate-result");
-}
+            <span id="progressText">
+                0%
+            </span>
 
-function showPlatform(icon,platform,url){
-    const result = document.getElementById("result");
-
-    result.innerHTML = `
-        <div class="video-card">
-            <h2>${icon} ${platform}</h2>
-            <p style="color:#999;margin-top:15px;">Contenu détecté avec succès.</p>
-            <a class="action-button" href="${url}" target="_blank" rel="noopener noreferrer">Ouvrir le contenu</a>
-            <button class="action-button" onclick="copyLink(${JSON.stringify(url)})">📋 Copier le lien</button>
-        </div>
-    `;
-
-    result.style.display = "block";
-}
-
-function showDirectLink(url,contentType,contentLength){
-    const result = document.getElementById("result");
-
-    let format = "Inconnu";
-    if(contentType) format = contentType.split(";")[0].replace("video/","").toUpperCase();
-
-    let size = "Inconnue";
-    if(contentLength){
-        const bytes = Number(contentLength);
-        if(bytes >= 1024*1024) size = (bytes/(1024*1024)).toFixed(1) + " MB";
-        else if(bytes >= 1024) size = (bytes/1024).toFixed(1) + " KB";
-        else size = bytes + " octets";
-    }
-
-    result.innerHTML = `
-        <div class="video-card">
-            <h2>🎬 Vidéo directe</h2>
-            <p style="color:#999;margin-top:15px;">📁 Format : <strong>${format}</strong></p>
-            <p style="color:#999;margin-top:8px;">📦 Taille : <strong>${size}</strong></p>
-
-            <video controls style="width:100%;margin-top:20px;border-radius:12px;background:#000;">
-                <source src="${url}" type="${contentType || "video/mp4"}">
-                Ton navigateur ne peut pas lire cette vidéo.
-            </video>
-
-            <p style="color:#777;font-size:13px;margin-top:15px;">💾 Le fichier sera enregistré sur ton ordinateur.</p>
-
-            <button class="download-button" onclick="downloadVideo(${JSON.stringify(url)})">
-                ⬇️ Télécharger la vidéo
+            <button
+                class="cancel-button"
+                onclick="cancelDownload()"
+            >
+                Annuler
             </button>
 
-            <div id="downloadProgress" style="display:none;margin-top:20px;">
-                <div style="background:#333;border-radius:10px;overflow:hidden;height:20px;">
-                    <div id="progressBar" style="width:0%;height:100%;background:#ff1744;transition:width .2s;"></div>
-                </div>
-                <p id="progressText" style="margin-top:8px;">0%</p>
-                <button id="cancelButton" class="action-button" onclick="cancelDownload()" style="display:none;">
-                    ❌ Annuler le téléchargement
-                </button>
+        </div>
+
+    </section>
+
+
+    <!-- STATISTIQUES -->
+
+    <section class="stats">
+
+        <div class="stat">
+
+            <span
+                id="downloadCount"
+                class="stat-number"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Téléchargements
+            </span>
+
+        </div>
+
+
+        <div class="stat">
+
+            <span
+                id="analysisCount"
+                class="stat-number"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Analyses
+            </span>
+
+        </div>
+
+
+        <div class="stat">
+
+            <span
+                id="historyCount"
+                class="stat-number"
+            >
+                0
+            </span>
+
+            <span class="stat-label">
+                Liens enregistrés
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- HISTORIQUE -->
+
+    <section class="section">
+
+        <h2>
+            📜 Historique
+        </h2>
+
+        <div
+            id="history"
+            class="history"
+        ></div>
+
+        <button
+            class="clear-history"
+            onclick="clearHistory()"
+        >
+            Effacer l'historique
+        </button>
+
+    </section>
+
+
+    <!-- INFORMATIONS -->
+
+    <section class="section">
+
+        <h2>
+            Pourquoi utiliser VideoHub ?
+        </h2>
+
+        <div class="info-grid">
+
+            <div class="info-card">
+
+                <h3>
+                    ⚡ Rapide
+                </h3>
+
+                <p>
+                    Analyse rapidement tes liens vidéo
+                    grâce à une interface simple.
+                </p>
+
             </div>
 
-            <button class="action-button" onclick="copyLink(${JSON.stringify(url)})">📋 Copier le lien</button>
+
+            <div class="info-card">
+
+                <h3>
+                    📱 Compatible mobile
+                </h3>
+
+                <p>
+                    VideoHub est conçu pour fonctionner
+                    sur ordinateur, tablette et téléphone.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    🔗 Plusieurs plateformes
+                </h3>
+
+                <p>
+                    VideoHub détecte notamment YouTube,
+                    TikTok, X/Twitter et Snapchat.
+                </p>
+
+            </div>
+
         </div>
+
+    </section>
+
+
+    <!-- DEUXIÈME PUBLICITÉ -->
+
+    <div class="ad-container">
+
+        Publicité
+
+        <!--
+        Deuxième emplacement Monetag.
+        -->
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    © 2026 VideoHub — Tous droits réservés.
+
+</footer>
+
+
+<script>
+
+let downloadController = null;
+
+let currentVideoUrl = "";
+
+
+// ==============================
+// COMPTEURS
+// ==============================
+
+let downloadCount =
+    Number(
+        localStorage.getItem(
+            "downloadCount"
+        )
+    ) || 0;
+
+
+let analysisCount =
+    Number(
+        localStorage.getItem(
+            "analysisCount"
+        )
+    ) || 0;
+
+
+// ==============================
+// HISTORIQUE
+// ==============================
+
+let history =
+    JSON.parse(
+        localStorage.getItem(
+            "downloadHistory"
+        )
+    ) || [];
+
+
+// ==============================
+// INITIALISATION
+// ==============================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        updateStats();
+
+        displayHistory();
+
+        loadTheme();
+
+    }
+);
+
+
+// ==============================
+// THEME
+// ==============================
+
+function toggleTheme() {
+
+    document.body.classList.toggle(
+        "light"
+    );
+
+    localStorage.setItem(
+        "theme",
+        document.body.classList.contains(
+            "light"
+        )
+            ? "light"
+            : "dark"
+    );
+
+}
+
+
+function loadTheme() {
+
+    const theme =
+        localStorage.getItem(
+            "theme"
+        );
+
+    if (theme === "light") {
+
+        document.body.classList.add(
+            "light"
+        );
+
+    }
+
+}
+
+
+// ==============================
+// ANALYSE
+// ==============================
+
+async function analyzeVideo() {
+
+    const input =
+        document.getElementById(
+            "videoUrl"
+        );
+
+    const button =
+        document.getElementById(
+            "analyzeButton"
+        );
+
+    const url =
+        input.value.trim();
+
+
+    if (!url) {
+
+        alert(
+            "Colle d'abord un lien vidéo."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        new URL(url);
+
+    } catch {
+
+        alert(
+            "Le lien n'est pas valide."
+        );
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Analyse...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/analyze",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            url: url
+                        })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Erreur serveur"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        currentVideoUrl =
+            url;
+
+
+        analysisCount++;
+
+        localStorage.setItem(
+            "analysisCount",
+            analysisCount
+        );
+
+
+        addToHistory(url);
+
+
+        displayResult(
+            data,
+            url
+        );
+
+
+        updateStats();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Impossible de contacter le serveur."
+        );
+
+    }
+
+
+    button.disabled = false;
+
+    button.textContent =
+        "Analyser";
+
+}
+
+
+// ==============================
+// AFFICHER RESULTAT
+// ==============================
+
+function displayResult(
+    data,
+    url
+) {
+
+    const result =
+        document.getElementById(
+            "result"
+        );
+
+
+    const platform =
+        document.getElementById(
+            "platform"
+        );
+
+
+    const videoContainer =
+        document.getElementById(
+            "videoContainer"
+        );
+
+
+    result.style.display =
+        "block";
+
+
+    platform.textContent =
+        data.platform ||
+        "Plateforme inconnue";
+
+
+    videoContainer.innerHTML =
+        "";
+
+
+    // YouTube
+
+    if (
+        data.platform &&
+        data.platform.toLowerCase()
+            .includes("youtube")
+    ) {
+
+        showYouTube(url);
+
+    }
+
+
+    // Lien direct vidéo
+
+    else if (
+        data.contentType &&
+        data.contentType.startsWith(
+            "video/"
+        )
+    ) {
+
+        const video =
+            document.createElement(
+                "video"
+            );
+
+        video.controls = true;
+
+        video.src = url;
+
+        video.style.width =
+            "100%";
+
+        video.style.height =
+            "100%";
+
+        videoContainer.appendChild(
+            video
+        );
+
+    }
+
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ==============================
+// YOUTUBE
+// ==============================
+
+function getYouTubeId(url) {
+
+    try {
+
+        const parsed =
+            new URL(url);
+
+
+        if (
+            parsed.hostname.includes(
+                "youtu.be"
+            )
+        ) {
+
+            return parsed.pathname
+                .replace("/", "");
+
+        }
+
+
+        if (
+            parsed.hostname.includes(
+                "youtube.com"
+            )
+        ) {
+
+            return parsed.searchParams.get(
+                "v"
+            );
+
+        }
+
+    } catch {}
+
+    return null;
+
+}
+
+
+function showYouTube(url) {
+
+    const id =
+        getYouTubeId(url);
+
+
+    if (!id) {
+
+        return;
+
+    }
+
+
+    const container =
+        document.getElementById(
+            "videoContainer"
+        );
+
+
+    container.innerHTML = `
+
+        <iframe
+            src="https://www.youtube.com/embed/${id}"
+            allowfullscreen
+            loading="lazy"
+        ></iframe>
+
     `;
 
-    result.style.display = "block";
 }
 
-async function pasteLink(){
-    try{
-        const text = await navigator.clipboard.readText();
-        document.getElementById("videoUrl").value = text;
-    }catch(error){
-        alert("Impossible d'accéder au presse-papiers.");
-    }
-}
 
-function clearLink(){
-    document.getElementById("videoUrl").value = "";
-    document.getElementById("message").innerHTML = "";
-    document.getElementById("result").style.display = "none";
-    document.getElementById("result").innerHTML = "";
-}
+// ==============================
+// TELECHARGEMENT
+// ==============================
 
-function saveHistory(platform,url){
-    let history = JSON.parse(localStorage.getItem("videohub_history")) || [];
-    history = history.filter(item => item.url !== url);
-    history.unshift({platform,url});
-    history = history.slice(0,5);
-    localStorage.setItem("videohub_history",JSON.stringify(history));
-    displayHistory();
-}
+function startDownload() {
 
-function displayHistory(){
-    const list = document.getElementById("historyList");
-    const history = JSON.parse(localStorage.getItem("videohub_history")) || [];
-    list.innerHTML = "";
+    if (!currentVideoUrl) {
 
-    if(history.length === 0){
-        list.innerHTML = '<p style="text-align:center;color:#777;">Aucun lien analysé pour le moment.</p>';
+        alert(
+            "Analyse d'abord une vidéo."
+        );
+
         return;
+
     }
 
-    history.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "history-item";
 
-        const link = document.createElement("a");
-        link.className = "history-link";
-        link.href = "#home";
-        link.textContent = item.platform + " — " + item.url;
-        link.onclick = function(){
-            document.getElementById("videoUrl").value = item.url;
-        };
+    downloadVideo(
+        currentVideoUrl
+    );
 
-        div.appendChild(link);
-        list.appendChild(div);
-    });
 }
 
-function clearHistory(){
-    localStorage.removeItem("videohub_history");
+
+async function downloadVideo(url) {
+
+    downloadController =
+        new AbortController();
+
+
+    const progress =
+        document.getElementById(
+            "downloadProgress"
+        );
+
+
+    const progressBar =
+        document.getElementById(
+            "progressBar"
+        );
+
+
+    const progressText =
+        document.getElementById(
+            "progressText"
+        );
+
+
+    const downloadButton =
+        document.getElementById(
+            "downloadButton"
+        );
+
+
+    progress.style.display =
+        "block";
+
+
+    progressBar.style.width =
+        "0%";
+
+
+    progressText.textContent =
+        "0%";
+
+
+    downloadButton.disabled =
+        true;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/download?url=" +
+                encodeURIComponent(url),
+                {
+                    signal:
+                        downloadController
+                            .signal
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Téléchargement impossible"
+            );
+
+        }
+
+
+        const contentLength =
+            response.headers.get(
+                "content-length"
+            );
+
+
+        if (!response.body) {
+
+            throw new Error(
+                "Réponse invalide"
+            );
+
+        }
+
+
+        const reader =
+            response.body.getReader();
+
+
+        const chunks = [];
+
+        let received = 0;
+
+
+        while (true) {
+
+            const {
+                done,
+                value
+            } =
+                await reader.read();
+
+
+            if (done) {
+
+                break;
+
+            }
+
+
+            chunks.push(value);
+
+            received += value.length;
+
+
+            if (contentLength) {
+
+                const percent =
+                    Math.round(
+                        (
+                            received /
+                            Number(
+                                contentLength
+                            )
+                        ) * 100
+                    );
+
+
+                progressBar.style.width =
+                    percent + "%";
+
+
+                progressText.textContent =
+                    percent + "%";
+
+            }
+
+        }
+
+
+        const blob =
+            new Blob(chunks);
+
+
+        const downloadUrl =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const a =
+            document.createElement(
+                "a"
+            );
+
+
+        a.href =
+            downloadUrl;
+
+
+        a.download =
+            "videohub-video";
+
+
+        document.body.appendChild(
+            a
+        );
+
+
+        a.click();
+
+        a.remove();
+
+
+        URL.revokeObjectURL(
+            downloadUrl
+        );
+
+
+        downloadCount++;
+
+
+        localStorage.setItem(
+            "downloadCount",
+            downloadCount
+        );
+
+
+        updateStats();
+
+
+        progressText.textContent =
+            "Téléchargement terminé ✓";
+
+
+    } catch (error) {
+
+        if (
+            error.name ===
+            "AbortError"
+        ) {
+
+            progressText.textContent =
+                "Téléchargement annulé.";
+
+        } else {
+
+            console.error(error);
+
+            alert(
+                "Erreur pendant le téléchargement."
+            );
+
+        }
+
+    }
+
+
+    downloadButton.disabled =
+        false;
+
+}
+
+
+// ==============================
+// ANNULER
+// ==============================
+
+function cancelDownload() {
+
+    if (
+        downloadController
+    ) {
+
+        downloadController.abort();
+
+        downloadController =
+            null;
+
+    }
+
+}
+
+
+// ==============================
+// HISTORIQUE
+// ==============================
+
+function addToHistory(url) {
+
+    history =
+        history.filter(
+            item =>
+                item !== url
+        );
+
+
+    history.unshift(url);
+
+
+    history =
+        history.slice(
+            0,
+            5
+        );
+
+
+    localStorage.setItem(
+        "downloadHistory",
+        JSON.stringify(history)
+    );
+
+
     displayHistory();
+
 }
 
-async function copyLink(url){
-    try{
-        await navigator.clipboard.writeText(url);
-        alert("✅ Lien copié !");
-    }catch(error){
-        alert("❌ Impossible de copier le lien.");
+
+function displayHistory() {
+
+    const container =
+        document.getElementById(
+            "history"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        history.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="history-item">
+
+                <span class="history-url">
+                    Aucun lien enregistré.
+                </span>
+
+            </div>
+
+        `;
+
+        updateStats();
+
+        return;
+
     }
+
+
+    history.forEach(
+        function (url) {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "history-item";
+
+
+            const text =
+                document.createElement(
+                    "span"
+                );
+
+
+            text.className =
+                "history-url";
+
+
+            text.textContent =
+                url;
+
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "history-button";
+
+
+            button.textContent =
+                "Analyser";
+
+
+            button.onclick =
+                function () {
+
+                    document.getElementById(
+                        "videoUrl"
+                    ).value =
+                        url;
+
+
+                    analyzeVideo();
+
+                };
+
+
+            item.appendChild(
+                text
+            );
+
+
+            item.appendChild(
+                button
+            );
+
+
+            container.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    updateStats();
+
 }
 
-displayHistory();
 
-document.getElementById("videoUrl").addEventListener("keydown",function(event){
-    if(event.key === "Enter") analyzeVideo();
-});
+function clearHistory() {
+
+    if (
+        !confirm(
+            "Effacer tout l'historique ?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    history = [];
+
+
+    localStorage.removeItem(
+        "downloadHistory"
+    );
+
+
+    displayHistory();
+
+}
+
+
+// ==============================
+// STATS
+// ==============================
+
+function updateStats() {
+
+    const downloadElement =
+        document.getElementById(
+            "downloadCount"
+        );
+
+
+    const analysisElement =
+        document.getElementById(
+            "analysisCount"
+        );
+
+
+    const historyElement =
+        document.getElementById(
+            "historyCount"
+        );
+
+
+    if (downloadElement) {
+
+        downloadElement.textContent =
+            downloadCount;
+
+    }
+
+
+    if (analysisElement) {
+
+        analysisElement.textContent =
+            analysisCount;
+
+    }
+
+
+    if (historyElement) {
+
+        historyElement.textContent =
+            history.length;
+
+    }
+
+}
+
+
+// ==============================
+// ENTER
+// ==============================
+
+document
+    .getElementById(
+        "videoUrl"
+    )
+    .addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                analyzeVideo();
+
+            }
+
+        }
+    );
+
 </script>
 
 </body>
+
 </html>
