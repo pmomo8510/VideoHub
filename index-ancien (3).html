@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="google-site-verification" content="HEwyfeWZ55_gNVec8eLn670gckXtR08lQ0adsjPDbd0">
+
+<title>ToolHub — Téléchargeur vidéo, PDF, images et outils en ligne gratuits</title>
+<meta name="description" content="ToolHub regroupe des outils en ligne gratuits : téléchargeur vidéo, outils PDF, compresseur et convertisseur d'images JPG PNG WebP, générateur QR code, outils texte, calculatrices et plus.">
+<meta name="keywords" content="ToolHub, télécharger vidéo, téléchargeur vidéo, vidéo en ligne, PDF, fusionner PDF, compresser PDF, compresser image, convertir JPG PNG WebP, redimensionner image, QR code, compteur de mots, calculatrice en ligne">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://videohub-nal7.onrender.com/">
+<meta property="og:title" content="ToolHub — Tous vos outils en ligne gratuits">
+<meta property="og:description" content="Téléchargeur vidéo, outils PDF, images, QR codes, texte et calculatrices réunis sur une seule plateforme.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://videohub-nal7.onrender.com/">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+
+<!-- Monetag : conserver ton code publicitaire actuel -->
+<script src="https://quge5.com/88/tag.min.js" data-zone="275053" async data-cfasync="false"></script>
+
+<!-- Bibliothèques utilisées uniquement côté navigateur pour certains outils -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+<style>
+:root{
+ --bg:#07111f;--bg2:#0b1728;--card:rgba(255,255,255,.06);
+ --border:rgba(255,255,255,.10);--text:#f8fafc;--muted:#94a3b8;
+ --primary:#38bdf8;--primary2:#0ea5e9;--success:#22c55e;--danger:#ef4444;
+ --shadow:0 25px 70px rgba(0,0,0,.30);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+ font-family:Inter,Arial,Helvetica,sans-serif;color:var(--text);min-height:100vh;
+ background:radial-gradient(circle at 20% 0%,rgba(56,189,248,.16),transparent 30%),
+ radial-gradient(circle at 90% 10%,rgba(14,165,233,.10),transparent 30%),
+ linear-gradient(135deg,var(--bg),var(--bg2));transition:.3s
+}
+body.light{--bg:#f1f5f9;--bg2:#fff;--card:rgba(255,255,255,.9);--border:#e2e8f0;--text:#0f172a;--muted:#64748b}
+header{position:sticky;top:0;z-index:100;background:rgba(7,17,31,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+body.light header{background:rgba(255,255,255,.88)}
+.nav{max-width:1180px;margin:auto;height:70px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:900;letter-spacing:-1px;text-decoration:none;color:var(--text)}
+.logo-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;overflow:hidden;background:transparent;flex:0 0 40px}
+.logo-icon img{width:100%;height:100%;display:block;object-fit:cover}
+.logo span{color:var(--primary)}
+.nav-links{display:flex;align-items:center;gap:20px}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:700}
+.nav-links a:hover{color:var(--primary)}
+.theme-button{width:42px;height:42px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;font-size:18px}
+main{max-width:1180px;margin:auto;padding:25px 20px 70px}
+.hero{text-align:center;padding:55px 10px 25px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:var(--primary);font-size:13px;font-weight:800;margin-bottom:20px}
+.hero h1{max-width:900px;margin:auto;font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-3px}
+.hero h1 span{color:var(--primary)}
+.hero p{max-width:780px;margin:20px auto 0;color:var(--muted);line-height:1.7;font-size:17px}
+.ad{max-width:900px;min-height:70px;margin:22px auto;padding:12px;border:1px dashed var(--border);border-radius:16px;text-align:center;color:var(--muted);font-size:12px}
+.section-title{text-align:center;margin:55px 0 22px}
+.section-title h2{font-size:30px}
+.section-title p{color:var(--muted);margin-top:8px}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tool-card{
+ background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;
+ box-shadow:var(--shadow);cursor:pointer;transition:.2s
+}
+.tool-card:hover{transform:translateY(-4px);border-color:rgba(56,189,248,.35)}
+.tool-icon{font-size:32px;margin-bottom:12px}
+.tool-card h3{font-size:19px;margin-bottom:7px}
+.tool-card p{color:var(--muted);line-height:1.55;font-size:14px}
+.tool-tag{display:inline-block;margin-top:14px;padding:5px 9px;border-radius:999px;background:rgba(56,189,248,.1);color:var(--primary);font-size:11px;font-weight:800}
+.panel{display:none;max-width:950px;margin:28px auto;padding:25px;border-radius:22px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow)}
+.panel.active{display:block}
+.panel h2{font-size:25px;margin-bottom:8px}
+.panel-desc{color:var(--muted);margin-bottom:20px;line-height:1.6}
+.input-row{display:flex;gap:10px}
+input,textarea,select{
+ width:100%;border:1px solid var(--border);outline:none;border-radius:13px;
+ background:rgba(0,0,0,.18);color:var(--text);padding:15px;font-size:15px
+}
+body.light input,body.light textarea,body.light select{background:#f8fafc}
+textarea{min-height:130px;resize:vertical}
+button,.btn{
+ border:0;border-radius:13px;padding:13px 18px;background:linear-gradient(135deg,var(--primary),var(--primary2));
+ color:#082f49;font-weight:900;cursor:pointer;transition:.2s
+}
+button:hover,.btn:hover{transform:translateY(-1px)}
+button.secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+button.danger{background:var(--danger);color:white}
+button:disabled{opacity:.5;cursor:wait;transform:none}
+.result{margin-top:20px}
+.result-box{padding:18px;border-radius:16px;background:rgba(0,0,0,.14);border:1px solid var(--border)}
+.video-container{width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#000;margin-bottom:16px}
+.video-container iframe,.video-container video{width:100%;height:100%;border:0}
+.progress{display:none;margin-top:16px}
+.progress-track{height:10px;border-radius:999px;background:rgba(148,163,184,.2);overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:.15s}
+.progress-text{font-size:13px;color:var(--muted);margin-top:7px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.stat{padding:16px;border:1px solid var(--border);border-radius:16px;text-align:center;background:var(--card)}
+.stat strong{display:block;font-size:25px;color:var(--primary)}
+.stat span{font-size:12px;color:var(--muted)}
+.history{margin-top:18px}
+.history-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.history-url{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13px}
+.history-button{padding:8px 11px;font-size:12px}
+.file-box{border:2px dashed var(--border);padding:28px;text-align:center;border-radius:17px}
+.file-box input{border:0;background:none;padding:10px}
+.preview{margin-top:18px;display:none;text-align:center}
+.preview img{max-width:100%;max-height:320px;border-radius:14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qr-wrap{text-align:center;margin-top:20px}
+#qrcode{display:inline-block;padding:12px;background:white;border-radius:10px}
+.calculator{max-width:600px;margin:auto}
+.calc-output{font-size:28px;font-weight:900;color:var(--primary);text-align:center;padding:20px}
+footer{max-width:1180px;margin:auto;padding:35px 20px 50px;color:var(--muted);text-align:center;border-top:1px solid var(--border)}
+footer strong{color:var(--text)}
+@media(max-width:800px){
+ .tools-grid{grid-template-columns:repeat(2,1fr)}
+ .nav-links a{display:none}
+ .input-row{flex-direction:column}
+ .two{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ main{padding-left:14px;padding-right:14px}
+ .tools-grid{grid-template-columns:1fr}
+ .hero{padding-top:35px}
+ .stats{grid-template-columns:1fr}
+ .panel{padding:18px}
+}
+
+/* --- Style accueil inspiré des convertisseurs modernes --- */
+body{
+ background:
+   radial-gradient(circle at 50% -10%,rgba(56,189,248,.10),transparent 35%),
+   linear-gradient(180deg,#111827 0%,#17191f 48%,#0f1116 100%);
+}
+body::before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;
+ background-image:radial-gradient(circle at 20px 20px,var(--text) 1px,transparent 1.5px);
+ background-size:40px 40px;z-index:-1;
+}
+header{background:rgba(15,17,22,.84);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav{height:76px;max-width:1120px}
+.logo{font-size:27px}
+.logo-icon{width:42px;height:42px;border-radius:11px}
+.hero{padding:68px 10px 28px;max-width:1050px;margin:auto}
+.hero .badge{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.13);color:#facc15;margin-bottom:24px}
+.hero h1{font-size:clamp(42px,6vw,70px);letter-spacing:-3.5px}
+.hero p{max-width:780px;font-size:16px;color:#cbd5e1;margin-top:18px}
+.converter-box{max-width:820px;margin:34px auto 0;padding:10px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);box-shadow:0 20px 60px rgba(0,0,0,.28);display:flex;gap:8px}
+.converter-box input{border:0;background:transparent;min-width:0;padding:16px 14px;font-size:16px}
+.converter-box select{width:150px;border:0;background:#1e293b;padding:0 14px;font-weight:800;color:#e2e8f0}
+.converter-box button{min-width:88px;background:#ef334c;color:white;border-radius:12px;padding:0 22px}
+.compatible{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin:26px auto 0;max-width:900px}
+.compatible-label{color:#94a3b8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-right:4px}
+.compatible span{padding:9px 15px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.06);color:#e2e8f0;font-size:12px;font-weight:800}
+.home-section{max-width:1000px;margin:35px auto 0}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.how-card{padding:24px;border-top:1px solid rgba(255,255,255,.08);text-align:center}
+.how-number{width:38px;height:38px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(56,189,248,.12);color:var(--primary);font-weight:900}
+.how-card h3{font-size:17px;margin-bottom:8px}.how-card p{font-size:14px;color:var(--muted);line-height:1.6}
+.section-divider{height:1px;background:rgba(255,255,255,.08);margin:55px 0 0}
+@media(max-width:700px){.converter-box{flex-direction:column;padding:8px}.converter-box select,.converter-box button{width:100%;height:50px}.converter-box input{height:52px}.how-grid{grid-template-columns:1fr}.hero{padding-top:42px}.hero h1{letter-spacing:-2px}}
+
+</style>
+</head>
+
+<body>
+<header>
+ <nav class="nav">
+  <a class="logo" href="#" onclick="goHome();return false;">
+   <div class="logo-icon"><img src="/favicon.png" alt="ToolHub"></div><div>Tool<span>Hub</span></div>
+  </a>
+  <div class="nav-links">
+   <a href="#tools">Outils</a>
+   <a href="#video">Vidéo</a>
+   <a href="#image">Images</a>
+   <a href="#pdf">PDF</a>
+   <button id="themeButton" class="theme-button" onclick="toggleTheme()">🌙</button>
+  </div>
+ </nav>
+</header>
+
+<main>
+<section class="hero" id="home">
+ <div class="badge">★★★★★ &nbsp; 4.8 — Plateforme ToolHub</div>
+ <h1>Vos outils en ligne, <span>simplement</span></h1>
+ <p>Un espace rapide et moderne pour analyser vos vidéos, convertir vos fichiers et utiliser tous vos outils du quotidien au même endroit.</p>
+
+ <div class="converter-box">
+  <input id="heroVideoUrl" type="url" placeholder="Collez une URL vidéo ou un lien ici..." autocomplete="off">
+  <select id="heroFormat" aria-label="Type d’opération">
+   <option value="analysis">Analyse vidéo</option>
+   <option value="mp4">MP4</option>
+   <option value="mp3">MP3</option>
+  </select>
+  <button onclick="startHeroAnalyze()">OK</button>
+ </div>
+ <div class="compatible"><span class="compatible-label">Compatible avec</span><span>YouTube</span><span>TikTok</span><span>X (Twitter)</span><span>Instagram</span><span>Facebook</span><span>Twitch</span><span>Dailymotion</span></div>
+</section>
+
+<div class="ad">Espace publicitaire</div>
+
+<section class="home-section">
+ <div class="section-title"><h2>Comment ça fonctionne ?</h2><p>Trois étapes simples pour commencer.</p></div>
+ <div class="how-grid">
+  <div class="how-card"><div class="how-number">1</div><h3>Collez le lien</h3><p>Copiez l'URL de votre vidéo ou ouvrez directement l'outil dont vous avez besoin.</p></div>
+  <div class="how-card"><div class="how-number">2</div><h3>Choisissez votre outil</h3><p>Vidéo, image, PDF, QR code, texte ou calcul : tout est regroupé dans ToolHub.</p></div>
+  <div class="how-card"><div class="how-number">3</div><h3>Obtenez votre résultat</h3><p>Lancez l'opération et récupérez votre résultat directement depuis votre navigateur.</p></div>
+ </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="tools">
+ <div class="section-title">
+  <h2>🛠️ Nos outils</h2>
+  <p>Choisissez un outil et commencez immédiatement.</p>
+ </div>
+
+ <div class="tools-grid">
+  <article class="tool-card" onclick="openTool('video')"><div class="tool-icon">🎥</div><h3>Téléchargeur vidéo</h3><p>Analysez un lien vidéo et téléchargez les fichiers directement accessibles.</p><span class="tool-tag">VIDÉO</span></article>
+  <article class="tool-card" onclick="openTool('image')"><div class="tool-icon">🖼️</div><h3>Outils image</h3><p>Compressez, convertissez et redimensionnez vos images directement dans le navigateur.</p><span class="tool-tag">IMAGE</span></article>
+  <article class="tool-card" onclick="openTool('pdf')"><div class="tool-icon">📄</div><h3>Outils PDF</h3><p>Fusionnez des PDF ou exportez des pages en utilisant les outils disponibles.</p><span class="tool-tag">PDF</span></article>
+  <article class="tool-card" onclick="openTool('qr')"><div class="tool-icon">🔳</div><h3>Générateur QR Code</h3><p>Créez rapidement un QR code à partir d'un lien, d'un texte ou d'informations.</p><span class="tool-tag">QR</span></article>
+  <article class="tool-card" onclick="openTool('text')"><div class="tool-icon">🔤</div><h3>Outils texte</h3><p>Comptez les mots et les caractères et analysez rapidement votre texte.</p><span class="tool-tag">TEXTE</span></article>
+  <article class="tool-card" onclick="openTool('calc')"><div class="tool-icon">🔢</div><h3>Calculatrices</h3><p>Pourcentages, conversions et calculs rapides accessibles gratuitement.</p><span class="tool-tag">CALCUL</span></article>
+ </div>
+</section>
+
+<!-- VIDEO -->
+<section class="panel" id="video">
+ <h2>🎥 Téléchargeur et analyseur vidéo</h2>
+ <p class="panel-desc">Collez un lien vidéo. ToolHub détecte notamment YouTube, TikTok, X/Twitter et Snapchat. Le téléchargement dépend de l'accessibilité du fichier et des droits/conditions applicables.</p>
+ <div class="input-row">
+  <input id="videoUrl" type="url" placeholder="Collez votre lien vidéo ici..." autocomplete="off">
+  <button id="analyzeButton" onclick="analyzeVideo()">🔍 Analyser</button>
+ </div>
+ <div id="videoResult" class="result" style="display:none">
+  <div class="result-box">
+   <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:15px">
+    <strong>Résultat</strong><span id="platform" class="tool-tag">—</span>
+   </div>
+   <div id="videoContainer" class="video-container"></div>
+   <div class="actions">
+    <button id="downloadButton" onclick="startDownload()">⬇️ Télécharger</button>
+    <button class="secondary" onclick="clearVideoResult()">✕ Fermer</button>
+   </div>
+   <div id="downloadProgress" class="progress">
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <div id="progressText" class="progress-text">Connexion...</div>
+    <button class="secondary" style="margin-top:10px" onclick="cancelDownload()">Annuler</button>
+   </div>
+  </div>
+ </div>
+ <div class="stats">
+  <div class="stat"><strong id="downloadCount">0</strong><span>Téléchargements sur cet appareil</span></div>
+  <div class="stat"><strong id="analysisCount">0</strong><span>Analyses sur cet appareil</span></div>
+  <div class="stat"><strong id="historyCount">0</strong><span>Liens enregistrés</span></div>
+ </div>
+ <div class="history">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Historique récent</strong><button class="secondary" onclick="clearHistory()">Effacer</button></div>
+  <div id="historyList"></div>
+ </div>
+</section>
+
+<!-- IMAGE -->
+<section class="panel" id="image">
+ <h2>🖼️ Outils image</h2>
+ <p class="panel-desc">Les opérations d'image ci-dessous sont réalisées localement dans votre navigateur. Le fichier n'est pas envoyé à notre serveur par cet outil.</p>
+ <div class="file-box">
+  <strong>Sélectionnez une image</strong>
+  <input id="imageFile" type="file" accept="image/*" onchange="loadImage()">
+ </div>
+ <div id="imagePreview" class="preview"><img id="previewImg" alt="Aperçu de l'image"></div>
+ <div class="two" style="margin-top:15px">
+  <div><label>Largeur (px)</label><input id="imgWidth" type="number" min="1" max="10000" step="1" placeholder="Largeur automatique"></div>
+  <div><label>Hauteur (px)</label><input id="imgHeight" type="number" min="1" max="10000" step="1" placeholder="Hauteur automatique"></div>
+ </div>
+ <div class="two" style="margin-top:12px">
+  <div><label>Format</label><select id="imgFormat"><option value="image/png">PNG</option><option value="image/jpeg">JPG</option><option value="image/webp">WebP</option></select></div>
+  <div><label>Qualité JPG/WebP</label><input id="imgQuality" type="number" min="1" max="100" value="90"></div>
+ </div>
+ <div class="actions">
+  <button onclick="processImage()">⚙️ Convertir / redimensionner</button>
+  <button class="secondary" onclick="compressImage()">📦 Compresser</button>
+ </div>
+ <div id="imageOutput" class="result"></div>
+</section>
+
+<!-- PDF -->
+<section class="panel" id="pdf">
+ <h2>📄 Outils PDF</h2>
+ <p class="panel-desc">Sélectionnez plusieurs fichiers PDF pour les fusionner directement dans votre navigateur. Les fichiers restent sur votre appareil pendant cette opération.</p>
+ <div class="file-box"><strong>Choisir plusieurs PDF</strong><input id="pdfFiles" type="file" accept="application/pdf" multiple></div>
+ <div id="pdfInfo" class="result"></div>
+ <div class="actions"><button onclick="mergePDFs()">📎 Fusionner les PDF</button></div>
+</section>
+
+<!-- QR -->
+<section class="panel" id="qr">
+ <h2>🔳 Générateur de QR Code</h2>
+ <p class="panel-desc">Créez un QR code à partir d'un lien ou de n'importe quel texte.</p>
+ <textarea id="qrText" placeholder="https://exemple.com"></textarea>
+ <div class="actions"><button onclick="generateQR()">🔳 Générer</button><button class="secondary" onclick="downloadQR()">⬇️ Télécharger le QR</button></div>
+ <div class="qr-wrap"><div id="qrcode"></div></div>
+</section>
+
+<!-- TEXT -->
+<section class="panel" id="text">
+ <h2>🔤 Compteur de mots et caractères</h2>
+ <p class="panel-desc">Collez ou écrivez votre texte pour obtenir instantanément les statistiques.</p>
+ <textarea id="textInput" placeholder="Écrivez ou collez votre texte ici..." oninput="countText()"></textarea>
+ <div class="stats">
+  <div class="stat"><strong id="wordCount">0</strong><span>Mots</span></div>
+  <div class="stat"><strong id="charCount">0</strong><span>Caractères</span></div>
+  <div class="stat"><strong id="lineCount">0</strong><span>Lignes</span></div>
+ </div>
+</section>
+
+<!-- CALCUL -->
+<section class="panel" id="calc">
+ <h2>🔢 Calculatrice de pourcentage</h2>
+ <p class="panel-desc">Calculez rapidement un pourcentage ou une augmentation/réduction.</p>
+ <div class="calculator">
+  <div class="two">
+   <div><label>Valeur</label><input id="calcValue" type="number" placeholder="100"></div>
+   <div><label>Pourcentage</label><input id="calcPercent" type="number" placeholder="20"></div>
+  </div>
+  <div class="actions"><button onclick="calculatePercent()">Calculer</button></div>
+  <div id="calcOutput" class="calc-output">—</div>
+ </div>
+</section>
+</main>
+
+<footer>
+ <strong>ToolHub</strong> — Tous vos outils en ligne au même endroit.<br>
+ <span>Outils gratuits, rapides et accessibles sur ordinateur et mobile.</span>
+</footer>
+
+<script>
+let downloadController=null,currentVideoUrl="";
+let downloadCount=Number(localStorage.getItem("downloadCount"))||0;
+let analysisCount=Number(localStorage.getItem("analysisCount"))||0;
+let history=JSON.parse(localStorage.getItem("downloadHistory")||"[]");
+if(!Array.isArray(history))history=[];
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const w=document.getElementById("imgWidth");
+  const h=document.getElementById("imgHeight");
+
+  if(w){
+    w.addEventListener("change",updateImageHeight);
+  }
+  if(h){
+    h.addEventListener("change",updateImageWidth);
+  }
+
+ updateStats();displayHistory();loadTheme();
+ document.getElementById("videoUrl").addEventListener("keydown",e=>{if(e.key==="Enter")analyzeVideo()});
+ const heroInput=document.getElementById("heroVideoUrl");
+ if(heroInput)heroInput.addEventListener("keydown",e=>{if(e.key==="Enter")startHeroAnalyze()});
+});
+
+function openTool(id){
+ document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+ const el=document.getElementById(id); if(el)el.classList.add("active");
+ el?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function startHeroAnalyze(){
+ const hero=document.getElementById("heroVideoUrl");
+ const target=document.getElementById("videoUrl");
+ const format=document.getElementById("heroFormat");
+ if(!hero||!target)return;
+ target.value=hero.value.trim();
+ currentDownloadFormat=(format&&format.value==="mp3")?"mp3":"mp4";
+ openTool("video");
+ if(target.value) analyzeVideo();
+}
+function goHome(){document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));document.getElementById("home").scrollIntoView({behavior:"smooth"})}
+
+function toggleTheme(){
+ document.body.classList.toggle("light");
+ localStorage.setItem("theme",document.body.classList.contains("light")?"light":"dark");
+ updateThemeButton();
+}
+function loadTheme(){if(localStorage.getItem("theme")==="light")document.body.classList.add("light");updateThemeButton()}
+function updateThemeButton(){const b=document.getElementById("themeButton");if(b)b.textContent=document.body.classList.contains("light")?"☀️":"🌙"}
+
+let currentDownloadFormat="mp4";
+async function analyzeVideo(){
+ const input=document.getElementById("videoUrl"),button=document.getElementById("analyzeButton"),url=input.value.trim();
+ if(!url)return alert("Collez d'abord un lien vidéo.");
+ try{const u=new URL(url);if(!["http:","https:"].includes(u.protocol))throw 0}catch{return alert("Le lien n'est pas valide.")}
+ button.disabled=true;button.textContent="Analyse...";
+ try{
+  const r=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+  if(!r.ok)throw new Error("Erreur serveur.");
+  const data=await r.json();if(!data.success)throw new Error(data.message||"Analyse impossible.");
+  currentVideoUrl=url;analysisCount++;localStorage.setItem("analysisCount",analysisCount);addToHistory(url);displayVideoResult(data,url);updateStats();
+ }catch(e){console.error(e);alert(e.message||"Impossible de contacter le serveur.")}
+ finally{button.disabled=false;button.textContent="🔍 Analyser"}
+}
+function getYouTubeId(url){
+ try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.replace(/^\/+/,"").split("/")[0];if(u.hostname.includes("youtube.com"))return u.searchParams.get("v")}catch{}
+ return null;
+}
+function displayVideoResult(data,url){
+ const result=document.getElementById("videoResult"),platform=document.getElementById("platform"),container=document.getElementById("videoContainer");
+ result.style.display="block";platform.textContent=data.platform||"Inconnu";container.innerHTML="";
+ if((data.platform||"").toLowerCase().includes("youtube")){
+  const id=getYouTubeId(url);if(id){const iframe=document.createElement("iframe");iframe.src="https://www.youtube.com/embed/"+encodeURIComponent(id);iframe.title="Vidéo YouTube";iframe.allowFullscreen=true;iframe.loading="lazy";iframe.allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";container.appendChild(iframe)}
+ }else if(data.contentType?.startsWith("video/")){
+  const v=document.createElement("video");v.controls=true;v.playsInline=true;v.src=url;container.appendChild(v)
+ }else{
+  container.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8;text-align:center;padding:30px">🎬 Aperçu non disponible<br><small style="display:block;margin-top:8px">Le fichier vidéo n\'est pas directement accessible depuis cette URL.</small></div>'
+ }
+ result.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function clearVideoResult(){document.getElementById("videoResult").style.display="none";document.getElementById("videoContainer").innerHTML=""}
+function startDownload(){if(!currentVideoUrl)return alert("Analysez d'abord une vidéo.");downloadVideo(currentVideoUrl)}
+async function downloadVideo(url){
+ downloadController=new AbortController();
+ const progress=document.getElementById("downloadProgress"),bar=document.getElementById("progressBar"),text=document.getElementById("progressText"),btn=document.getElementById("downloadButton");
+ progress.style.display="block";bar.style.width="0%";text.textContent="Connexion...";btn.disabled=true;
+ try{
+  const r=await fetch("/api/download?url="+encodeURIComponent(url)+"&format="+encodeURIComponent(currentDownloadFormat),{signal:downloadController.signal});
+  if(!r.ok)throw new Error(await r.text()||"Téléchargement impossible.");
+  const len=r.headers.get("content-length"),type=r.headers.get("content-type")||"application/octet-stream";
+  if(!r.body)throw new Error("Réponse invalide.");
+  const reader=r.body.getReader(),chunks=[];let received=0;
+  while(true){const {done,value}=await reader.read();if(done)break;chunks.push(value);received+=value.length;if(len){const p=Math.min(100,Math.round(received/Number(len)*100));bar.style.width=p+"%";text.textContent=p+"%"}else text.textContent=formatBytes(received)}
+  const blob=new Blob(chunks,{type}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=getDownloadFilename(url,type,currentDownloadFormat);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+  downloadCount++;localStorage.setItem("downloadCount",downloadCount);updateStats();bar.style.width="100%";text.textContent="Téléchargement terminé ✓";
+ }catch(e){if(e.name==="AbortError")text.textContent="Téléchargement annulé.";else{console.error(e);text.textContent="Échec du téléchargement.";alert(e.message||"Erreur pendant le téléchargement.")}}
+ finally{btn.disabled=false;downloadController=null}
+}
+function cancelDownload(){if(downloadController){downloadController.abort();downloadController=null}}
+function getDownloadFilename(url,type,format){
+ try{let f=decodeURIComponent(new URL(url).pathname.split("/").pop()||"ToolHub-file").replace(/[<>:"/\\|?*\x00-\x1F]/g,"").trim();if(!f||f===".")f="ToolHub-file";if(!f.includes(".")){if(format==="mp3"||type.includes("mpeg")||type.includes("mp3"))f+=".mp3";else if(type.includes("mp4"))f+=".mp4";else if(type.includes("webm"))f+=".webm";else f+=".video"}return f}catch{return"ToolHub-file"}
+}
+function formatBytes(bytes){if(!bytes)return"0 octet";const u=["octets","Ko","Mo","Go"],i=Math.min(3,Math.floor(Math.log(bytes)/Math.log(1024)));return(bytes/Math.pow(1024,i)).toFixed(i?1:0)+" "+u[i]}
+function addToHistory(url){history=history.filter(x=>x!==url);history.unshift(url);history=history.slice(0,5);localStorage.setItem("downloadHistory",JSON.stringify(history));displayHistory()}
+function displayHistory(){
+ const c=document.getElementById("historyList");if(!c)return;c.innerHTML="";
+ if(!history.length){c.innerHTML='<div style="color:var(--muted);padding:12px 0">Aucun lien enregistré pour le moment.</div>';updateStats();return}
+ history.forEach(url=>{const item=document.createElement("div");item.className="history-item";const s=document.createElement("span");s.className="history-url";s.textContent=url;const b=document.createElement("button");b.className="history-button";b.textContent="Analyser";b.onclick=()=>{document.getElementById("videoUrl").value=url;openTool("video");analyzeVideo()};item.append(s,b);c.appendChild(item)})
+ updateStats()
+}
+function clearHistory(){if(!confirm("Effacer tout l'historique ?"))return;history=[];localStorage.removeItem("downloadHistory");displayHistory()}
+function updateStats(){document.getElementById("downloadCount").textContent=downloadCount;document.getElementById("analysisCount").textContent=analysisCount;document.getElementById("historyCount").textContent=history.length}
+
+/* IMAGE */
+let selectedImage=null;
+
+function loadImage(){
+  const f=document.getElementById("imageFile").files[0];
+  if(!f)return;
+
+  if(!f.type.startsWith("image/")){
+    alert("Veuillez sélectionner une image.");
+    return;
+  }
+
+  selectedImage=f;
+
+  const r=new FileReader();
+  r.onload=e=>{
+    const preview=document.getElementById("previewImg");
+    preview.src=e.target.result;
+    document.getElementById("imagePreview").style.display="block";
+
+    // Toujours remettre les dimensions réelles de l'image.
+    // Cela évite par exemple une ancienne valeur 5 × 2 qui produit
+    // une image minuscule et donc presque vide au téléchargement.
+    const img=new Image();
+    img.onload=()=>{
+      document.getElementById("imgWidth").value=img.naturalWidth;
+      document.getElementById("imgHeight").value=img.naturalHeight;
+    };
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+function updateImageHeight(){
+  if(!selectedImage)return;
+  const wInput=document.getElementById("imgWidth");
+  const hInput=document.getElementById("imgHeight");
+  const preview=document.getElementById("previewImg");
+
+  const w=Number(wInput.value);
+  if(!w || !preview.naturalWidth || !preview.naturalHeight)return;
+
+  hInput.value=Math.max(1,Math.round(w*preview.naturalHeight/preview.naturalWidth));
+}
+
+function updateImageWidth(){
+  if(!selectedImage)return;
+  const wInput=document.getElementById("imgWidth");
+  const hInput=document.getElementById("imgHeight");
+  const preview=document.getElementById("previewImg");
+
+  const h=Number(hInput.value);
+  if(!h || !preview.naturalWidth || !preview.naturalHeight)return;
+
+  wInput.value=Math.max(1,Math.round(h*preview.naturalWidth/preview.naturalHeight));
+}
+
+function processImage(){renderImage(false)}
+function compressImage(){renderImage(true)}
+
+function renderImage(compress){
+  if(!selectedImage)return alert("Sélectionnez d'abord une image.");
+
+  const img=new Image();
+  const sourceUrl=URL.createObjectURL(selectedImage);
+
+  img.onload=()=>{
+    URL.revokeObjectURL(sourceUrl);
+
+    let w=Number(document.getElementById("imgWidth").value)||img.naturalWidth;
+    let h=Number(document.getElementById("imgHeight").value)||img.naturalHeight;
+
+    w=Math.max(1,Math.min(10000,Math.round(w)));
+    h=Math.max(1,Math.min(10000,Math.round(h)));
+
+    const c=document.createElement("canvas");
+    c.width=w;
+    c.height=h;
+
+    const ctx=c.getContext("2d");
+    if(!ctx){
+      alert("Votre navigateur ne peut pas traiter cette image.");
+      return;
+    }
+
+    const type=document.getElementById("imgFormat").value;
+    const qualityValue=Number(document.getElementById("imgQuality").value);
+    const q=Math.max(0.1,Math.min(1,(qualityValue||90)/100));
+
+    // Fond blanc pour éviter un fond noir lors de la conversion en JPG.
+    if(type==="image/jpeg"){
+      ctx.fillStyle="#ffffff";
+      ctx.fillRect(0,0,w,h);
+    }
+
+    ctx.drawImage(img,0,0,w,h);
+
+    c.toBlob(blob=>{
+      if(!blob){
+        alert("Impossible de créer l'image. Essayez PNG ou WebP.");
+        return;
+      }
+
+      const u=URL.createObjectURL(blob);
+      const ext=type==="image/png"?"png":type==="image/webp"?"webp":"jpg";
+
+      document.getElementById("imageOutput").innerHTML=
+        '<div class="result-box">'+
+        '<strong>Image prête ✓</strong>'+
+        '<p style="color:var(--muted);margin-top:8px">'+
+        formatBytes(blob.size)+' — '+w+' × '+h+' px</p>'+
+        '<div class="actions">'+
+        '<a class="btn" href="'+u+'" download="ToolHub-image.'+ext+'">⬇️ Télécharger</a>'+
+        '</div></div>';
+
+      // On garde l'URL active tant que le lien est affiché.
+    },type,compress?Math.min(q,0.75):q);
+  };
+
+  img.onerror=()=>{
+    URL.revokeObjectURL(sourceUrl);
+    alert("Impossible de lire cette image.");
+  };
+
+  img.src=sourceUrl;
+}
+
+/* PDF */
+async function mergePDFs(){
+ const files=[...document.getElementById("pdfFiles").files];if(files.length<2)return alert("Sélectionnez au moins 2 fichiers PDF.");
+ const info=document.getElementById("pdfInfo");info.textContent="Fusion en cours...";
+ try{
+  if(typeof PDFLib==="undefined")throw new Error("Bibliothèque PDF indisponible.");const out=await PDFLib.PDFDocument.create();
+  for(const file of files){const bytes=await file.arrayBuffer(),src=await PDFLib.PDFDocument.load(bytes);const pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p))}
+  const bytes=await out.save(),blob=new Blob([bytes],{type:"application/pdf"}),u=URL.createObjectURL(blob);
+  info.innerHTML='<div class="result-box">✅ PDF fusionné avec succès.<div class="actions"><a class="btn" href="'+u+'" download="ToolHub-fusion.pdf">⬇️ Télécharger le PDF</a></div></div>'
+ }catch(e){console.error(e);info.textContent="Impossible de fusionner ces fichiers PDF."}
+}
+
+/* QR */
+let qr=null;
+function generateQR(){
+ const text=document.getElementById("qrText").value.trim();if(!text)return alert("Entrez un texte ou un lien.");
+ if(typeof QRCode==="undefined")return alert("Générateur QR Code indisponible.");const c=document.getElementById("qrcode");c.innerHTML="";qr=new QRCode(c,{text,width:220,height:220,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H}); 
+}
+function downloadQR(){
+ const img=document.querySelector("#qrcode img"),canvas=document.querySelector("#qrcode canvas");if(!img&&!canvas)return alert("Générez d'abord un QR code.");
+ const a=document.createElement("a");a.download="ToolHub-QR.png";a.href=canvas?canvas.toDataURL("image/png"):img.src;a.click()
+}
+
+/* TEXTE */
+function countText(){
+ const t=document.getElementById("textInput").value;
+ document.getElementById("wordCount").textContent=t.trim()?t.trim().split(/\s+/).length:0;
+ document.getElementById("charCount").textContent=t.length;
+ document.getElementById("lineCount").textContent=t? t.split(/\r?\n/).length:0;
+}
+
+/* CALCUL */
+function calculatePercent(){
+ const v=Number(document.getElementById("calcValue").value),p=Number(document.getElementById("calcPercent").value);
+ if(!Number.isFinite(v)||!Number.isFinite(p))return alert("Entrez deux nombres.");
+ document.getElementById("calcOutput").textContent=(v*p/100).toLocaleString("fr-FR",{maximumFractionDigits:4})
+}
+</script>
+</body>
+</html>

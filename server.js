@@ -1,658 +1,693 @@
-
 const express = require("express");
 const path = require("path");
-const https = require("https");
-const http = require("http");
+const fs = require("fs");
+const os = require("os");
+const { spawn } = require("child_process");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const HOST = "0.0.0.0";
 
 app.use(express.json({ limit: "1mb" }));
-
-// ======================================================
-// FICHIERS DU SITE
-// ======================================================
-
 app.use(express.static(__dirname));
 
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
-});
 
-app.get("/robots.txt", (req, res) => {
-    res.sendFile(path.join(__dirname, "robots.txt"));
-});
+/* =====================================================
+   CONFIGURATION
+===================================================== */
 
-app.get("/sitemap.xml", (req, res) => {
-    res.sendFile(path.join(__dirname, "sitemap.xml"));
-});
-
-// ======================================================
-// VÉRIFICATION D'URL
-// ======================================================
-
-function parseHttpUrl(value) {
-    try {
-        const url = new URL(value);
-
-        if (
-            url.protocol !== "http:" &&
-            url.protocol !== "https:"
-        ) {
-            return null;
-        }
-
-        return url;
-    } catch {
-        return null;
+const SUPPORTED_PLATFORMS = [
+    {
+        name: "YouTube",
+        domains: [
+            "youtube.com",
+            "www.youtube.com",
+            "m.youtube.com",
+            "youtu.be"
+        ]
+    },
+    {
+        name: "TikTok",
+        domains: [
+            "tiktok.com",
+            "www.tiktok.com",
+            "vm.tiktok.com",
+            "vt.tiktok.com"
+        ]
+    },
+    {
+        name: "Instagram",
+        domains: [
+            "instagram.com",
+            "www.instagram.com"
+        ]
+    },
+    {
+        name: "Facebook",
+        domains: [
+            "facebook.com",
+            "www.facebook.com",
+            "fb.watch"
+        ]
+    },
+    {
+        name: "X / Twitter",
+        domains: [
+            "x.com",
+            "www.x.com",
+            "twitter.com",
+            "www.twitter.com"
+        ]
+    },
+    {
+        name: "Twitch",
+        domains: [
+            "twitch.tv",
+            "www.twitch.tv",
+            "clips.twitch.tv"
+        ]
+    },
+    {
+        name: "Dailymotion",
+        domains: [
+            "dailymotion.com",
+            "www.dailymotion.com",
+            "dai.ly"
+        ]
+    },
+    {
+        name: "Snapchat",
+        domains: [
+            "snapchat.com",
+            "www.snapchat.com",
+            "snap.com",
+            "www.snap.com"
+        ]
     }
-}
+];
 
-// ======================================================
-// DÉTECTION DE PLATEFORME
-// ======================================================
+
+/* =====================================================
+   OUTILS
+===================================================== */
 
 function detectPlatform(url) {
-    const parsed = parseHttpUrl(url);
-
-    if (!parsed) {
-        return null;
-    }
-
-    const host = parsed.hostname
-        .toLowerCase()
-        .replace(/^www\./, "");
-
-    if (
-        host === "youtube.com" ||
-        host === "youtu.be" ||
-        host.endsWith(".youtube.com")
-    ) {
-        return "YouTube";
-    }
-
-    if (
-        host === "tiktok.com" ||
-        host.endsWith(".tiktok.com")
-    ) {
-        return "TikTok";
-    }
-
-    if (
-        host === "twitter.com" ||
-        host === "x.com" ||
-        host.endsWith(".twitter.com") ||
-        host.endsWith(".x.com")
-    ) {
-        return "X / Twitter";
-    }
-
-    if (
-        host === "snapchat.com" ||
-        host.endsWith(".snapchat.com")
-    ) {
-        return "Snapchat";
-    }
-
-    return "Lien direct";
-}
-
-// ======================================================
-// ANALYSER UN LIEN DIRECT
-// ======================================================
-
-async function getVideoInfo(url) {
-    try {
-        const response = await fetch(url, {
-            method: "HEAD",
-            redirect: "follow",
-            headers: {
-                "User-Agent": "VideoHub/1.0"
-            }
-        });
-
-        const contentType =
-            response.headers.get("content-type") || "";
-
-        const contentLength =
-            response.headers.get("content-length") || null;
-
-        return {
-            success: response.ok,
-            contentType,
-            contentLength,
-            status: response.status
-        };
-
-    } catch (error) {
-
-        console.log(
-            "Erreur analyse lien :",
-            error.message
-        );
-
-        return {
-            success: false,
-            message: "Impossible de vérifier le fichier."
-        };
-    }
-}
-
-// ======================================================
-// API ANALYSE
-// ======================================================
-
-app.post("/api/analyze", async (req, res) => {
-
-    const url = req.body?.url;
-
-    if (!url) {
-        return res.json({
-            success: false,
-            message: "Aucun lien fourni."
-        });
-    }
-
-    const parsedUrl = parseHttpUrl(url);
-
-    if (!parsedUrl) {
-        return res.json({
-            success: false,
-            message: "Lien invalide."
-        });
-    }
-
-    const platform = detectPlatform(url);
-
-    let info = null;
-
-    // Pour les liens directs,
-    // on vérifie le fichier.
-    if (platform === "Lien direct") {
-        info = await getVideoInfo(url);
-    }
-
-    console.log(
-        `Plateforme détectée : ${platform}`
-    );
-
-    return res.json({
-        success: true,
-        platform,
-
-        contentType: info
-            ? info.contentType
-            : null,
-
-        contentLength: info
-            ? info.contentLength
-            : null,
-
-        directDownload:
-            platform === "Lien direct" &&
-            info?.success === true &&
-            info?.contentType?.startsWith("video/")
-    });
-});
-
-// ======================================================
-// NOM DE FICHIER SÉCURISÉ
-// ======================================================
-
-function getSafeFilename(url, contentType) {
 
     try {
 
         const parsed = new URL(url);
 
-        let filename = path.basename(
-            decodeURIComponent(parsed.pathname)
-        );
+        const hostname =
+            parsed.hostname
+                .toLowerCase()
+                .replace(/^www\./, "");
 
-        filename = filename
-            .replace(
-                /[<>:"/\\|?*\x00-\x1F]/g,
-                ""
-            )
-            .trim();
+        for (const platform of SUPPORTED_PLATFORMS) {
 
-        if (!filename || filename === ".") {
-            filename = "VideoHub-video";
-        }
+            for (const domain of platform.domains) {
 
-        // Ajout d'une extension si nécessaire.
+                const cleanDomain =
+                    domain.replace(/^www\./, "");
 
-        if (!filename.includes(".")) {
+                if (
+                    hostname === cleanDomain ||
+                    hostname.endsWith(
+                        "." + cleanDomain
+                    )
+                ) {
 
-            if (
-                contentType.includes("mp4")
-            ) {
-                filename += ".mp4";
+                    return platform.name;
 
-            } else if (
-                contentType.includes("webm")
-            ) {
-                filename += ".webm";
+                }
 
-            } else if (
-                contentType.includes("mpeg") ||
-                contentType.includes("mp3")
-            ) {
-                filename += ".mp3";
-
-            } else if (
-                contentType.includes("quicktime")
-            ) {
-                filename += ".mov";
             }
+
         }
 
-        return filename;
+        return "Lien direct";
+
+    } catch (error) {
+
+        return "Inconnu";
+
+    }
+
+}
+
+
+function isValidUrl(url) {
+
+    try {
+
+        const parsed = new URL(url);
+
+        return (
+            parsed.protocol === "http:" ||
+            parsed.protocol === "https:"
+        );
 
     } catch {
 
-        return "VideoHub-video";
+        return false;
+
     }
+
 }
 
-// ======================================================
-// TÉLÉCHARGEMENT DIRECT HTTP / HTTPS
-// ======================================================
 
-function downloadDirectFile(
-    url,
-    res,
-    redirectCount = 0
-) {
+function sanitizeFilename(name) {
 
-    // Protection contre les redirections infinies.
+    if (!name) {
 
-    if (redirectCount > 5) {
+        return "ToolHub-download";
 
-        return res
-            .status(400)
-            .send("Trop de redirections.");
     }
 
-    const parsedUrl = parseHttpUrl(url);
+    return name
+        .replace(
+            /[<>:"/\\|?*\x00-\x1F]/g,
+            ""
+        )
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 120);
 
-    if (!parsedUrl) {
-
-        return res
-            .status(400)
-            .send("Lien invalide.");
-    }
-
-    const protocol =
-        parsedUrl.protocol === "https:"
-            ? https
-            : http;
-
-    const request = protocol.get(
-        parsedUrl.href,
-        {
-            headers: {
-                "User-Agent": "VideoHub/1.0",
-                "Accept": "*/*"
-            }
-        },
-        (response) => {
-
-            // ==================================================
-            // REDIRECTION
-            // ==================================================
-
-            if (
-                response.statusCode >= 300 &&
-                response.statusCode < 400 &&
-                response.headers.location
-            ) {
-
-                response.resume();
-
-                const redirectUrl =
-                    new URL(
-                        response.headers.location,
-                        parsedUrl.href
-                    ).href;
-
-                return downloadDirectFile(
-                    redirectUrl,
-                    res,
-                    redirectCount + 1
-                );
-            }
-
-            // ==================================================
-            // ERREUR SERVEUR
-            // ==================================================
-
-            if (
-                response.statusCode < 200 ||
-                response.statusCode >= 300
-            ) {
-
-                response.resume();
-
-                return res
-                    .status(400)
-                    .send(
-                        "Impossible de récupérer le fichier."
-                    );
-            }
-
-            // ==================================================
-            // INFORMATIONS DU FICHIER
-            // ==================================================
-
-            const contentType =
-                response.headers["content-type"] ||
-                "application/octet-stream";
-
-            const contentLength =
-                response.headers["content-length"];
-
-            const filename =
-                getSafeFilename(
-                    parsedUrl.href,
-                    contentType
-                );
-
-            // ==================================================
-            // HEADERS
-            // ==================================================
-
-            res.setHeader(
-                "Content-Type",
-                contentType
-            );
-
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${filename}"`
-            );
-
-            if (contentLength) {
-
-                res.setHeader(
-                    "Content-Length",
-                    contentLength
-                );
-            }
-
-            // ==================================================
-            // TRANSFERT
-            // ==================================================
-
-            response.pipe(res);
-
-            response.on(
-                "error",
-                (error) => {
-
-                    console.log(
-                        "Erreur pendant le transfert :",
-                        error.message
-                    );
-
-                    if (!res.headersSent) {
-
-                        res.status(500).send(
-                            "Erreur pendant le téléchargement."
-                        );
-
-                    } else {
-
-                        res.destroy();
-                    }
-                }
-            );
-        }
-    );
-
-    // ======================================================
-    // TIMEOUT
-    // ======================================================
-
-    request.setTimeout(
-        120000,
-        () => {
-
-            request.destroy();
-
-            if (!res.headersSent) {
-
-                res.status(504).send(
-                    "Le téléchargement a pris trop de temps."
-                );
-            }
-        }
-    );
-
-    // ======================================================
-    // ERREUR CONNEXION
-    // ======================================================
-
-    request.on(
-        "error",
-        (error) => {
-
-            console.log(
-                "Erreur téléchargement :",
-                error.message
-            );
-
-            if (!res.headersSent) {
-
-                res.status(500).send(
-                    "Erreur pendant le téléchargement."
-                );
-            }
-        }
-    );
 }
 
-// ======================================================
-// API DOWNLOAD-URL
-// ======================================================
 
-app.get(
-    "/api/download-url",
-    (req, res) => {
+function getYtDlpPath() {
 
-        const url = req.query.url;
+    const executable =
+        process.platform === "win32"
+            ? "yt-dlp.exe"
+            : "yt-dlp";
 
-        if (!url) {
+    const possiblePaths = [
 
-            return res
-                .status(400)
-                .send("Lien manquant.");
+        path.join(
+            __dirname,
+            "node_modules",
+            "yt-dlp-exec",
+            "bin",
+            executable
+        ),
+
+        path.join(
+            __dirname,
+            "node_modules",
+            "yt-dlp-exec",
+            "bin",
+            "yt-dlp"
+        ),
+
+        path.join(
+            __dirname,
+            "node_modules",
+            "yt-dlp-exec",
+            "bin",
+            "yt-dlp.exe"
+        )
+
+    ];
+
+    for (const filePath of possiblePaths) {
+
+        if (fs.existsSync(filePath)) {
+
+            return filePath;
+
         }
 
-        downloadDirectFile(
-            url,
-            res
+    }
+
+    return null;
+
+}
+
+
+/* =====================================================
+   PAGE PRINCIPALE
+===================================================== */
+
+app.get("/", (req, res) => {
+
+    res.sendFile(
+        path.join(__dirname, "index.html")
+    );
+
+});
+
+
+/* =====================================================
+   API : ANALYSER UNE VIDEO
+===================================================== */
+
+app.post("/api/analyze", async (req, res) => {
+
+    const url =
+        String(req.body?.url || "").trim();
+
+
+    if (!isValidUrl(url)) {
+
+        return res.status(400).json({
+
+            success: false,
+
+            message:
+                "Veuillez fournir un lien HTTP ou HTTPS valide."
+
+        });
+
+    }
+
+
+    const platform =
+        detectPlatform(url);
+
+
+    return res.json({
+
+        success: true,
+
+        platform,
+
+        url,
+
+        downloadable:
+            platform !== "Inconnu",
+
+        message:
+            platform === "Lien direct"
+                ? "Lien détecté. ToolHub va essayer de récupérer le fichier directement."
+                : `Plateforme détectée : ${platform}`
+
+    });
+
+});
+
+
+/* =====================================================
+   API : TELECHARGER VIDEO OU AUDIO
+===================================================== */
+
+app.get("/api/download", async (req, res) => {
+
+    const url =
+        String(req.query.url || "").trim();
+
+    const format =
+        String(
+            req.query.format || "mp4"
+        )
+            .toLowerCase()
+            .trim();
+
+
+    if (!isValidUrl(url)) {
+
+        return res.status(400).json({
+
+            success: false,
+
+            message:
+                "Lien invalide."
+
+        });
+
+    }
+
+
+    if (
+        format !== "mp4" &&
+        format !== "mp3"
+    ) {
+
+        return res.status(400).json({
+
+            success: false,
+
+            message:
+                "Format non pris en charge."
+
+        });
+
+    }
+
+
+    const ytDlpPath =
+        getYtDlpPath();
+
+
+    if (!ytDlpPath) {
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                "yt-dlp est introuvable. Vérifiez que yt-dlp-exec est correctement installé."
+
+        });
+
+    }
+
+
+    const tempFolder = fs.mkdtempSync(
+        path.join(
+            os.tmpdir(),
+            "toolhub-"
+        )
+    );
+
+
+    const outputTemplate =
+        path.join(
+            tempFolder,
+            "%(title).150B.%(ext)s"
         );
+
+
+    let args;
+
+
+    if (format === "mp3") {
+
+        args = [
+
+            "--no-playlist",
+
+            "--no-warnings",
+
+            "--extract-audio",
+
+            "--audio-format",
+            "mp3",
+
+            "--audio-quality",
+            "0",
+
+            "--restrict-filenames",
+
+            "--output",
+            outputTemplate,
+
+            url
+
+        ];
+
+    } else {
+
+        args = [
+
+            "--no-playlist",
+
+            "--no-warnings",
+
+            "--format",
+            "best[ext=mp4]/best",
+
+            "--merge-output-format",
+            "mp4",
+
+            "--restrict-filenames",
+
+            "--output",
+            outputTemplate,
+
+            url
+
+        ];
+
     }
-);
 
-// ======================================================
-// API DOWNLOAD
-// ======================================================
 
-app.get(
-    "/api/download",
-    async (req, res) => {
+    let finished = false;
 
-        const url = req.query.url;
 
-        if (!url) {
-
-            return res
-                .status(400)
-                .send(
-                    "Aucun lien fourni."
-                );
-        }
-
-        const parsedUrl =
-            parseHttpUrl(url);
-
-        if (!parsedUrl) {
-
-            return res
-                .status(400)
-                .send(
-                    "Lien invalide."
-                );
-        }
+    function cleanup() {
 
         try {
 
-            const response =
-                await fetch(
-                    parsedUrl.href,
-                    {
-                        redirect: "follow",
-                        headers: {
-                            "User-Agent":
-                                "VideoHub/1.0",
-
-                            "Accept":
-                                "*/*"
-                        }
-                    }
-                );
-
-            if (!response.ok) {
-
-                return res
-                    .status(400)
-                    .send(
-                        "Impossible de télécharger ce fichier."
-                    );
-            }
-
-            const contentType =
-                response.headers.get(
-                    "content-type"
-                ) ||
-                "application/octet-stream";
-
-            const contentLength =
-                response.headers.get(
-                    "content-length"
-                );
-
-            const filename =
-                getSafeFilename(
-                    response.url ||
-                    parsedUrl.href,
-                    contentType
-                );
-
-            res.setHeader(
-                "Content-Type",
-                contentType
-            );
-
-            res.setHeader(
-                "Content-Disposition",
-                `attachment; filename="${filename}"`
-            );
-
-            if (contentLength) {
-
-                res.setHeader(
-                    "Content-Length",
-                    contentLength
-                );
-            }
-
-            if (!response.body) {
-
-                return res
-                    .status(500)
-                    .send(
-                        "Aucun fichier reçu."
-                    );
-            }
-
-            const reader =
-                response.body.getReader();
-
-            while (true) {
-
-                const {
-                    done,
-                    value
-                } =
-                    await reader.read();
-
-                if (done) {
-                    break;
+            fs.rmSync(
+                tempFolder,
+                {
+                    recursive: true,
+                    force: true
                 }
-
-                res.write(value);
-            }
-
-            res.end();
+            );
 
         } catch (error) {
 
             console.error(
-                "Erreur téléchargement :",
+                "Erreur nettoyage :",
                 error.message
             );
 
+        }
+
+    }
+
+
+    const processYtDlp =
+        spawn(
+            ytDlpPath,
+            args,
+            {
+                windowsHide: true
+            }
+        );
+
+
+    let errorOutput = "";
+
+
+    processYtDlp.stderr.on(
+        "data",
+        (data) => {
+
+            errorOutput +=
+                data.toString();
+
+        }
+    );
+
+
+    processYtDlp.on(
+        "error",
+        (error) => {
+
+            if (finished) {
+
+                return;
+
+            }
+
+            finished = true;
+
+            cleanup();
+
+
+            console.error(
+                "Impossible de lancer yt-dlp :",
+                error
+            );
+
+
             if (!res.headersSent) {
 
-                res.status(500).send(
-                    "Erreur pendant le téléchargement."
+                res.status(500).json({
+
+                    success: false,
+
+                    message:
+                        "Impossible de démarrer le téléchargeur."
+
+                });
+
+            }
+
+        }
+    );
+
+
+    processYtDlp.on(
+        "close",
+        (code) => {
+
+            if (finished) {
+
+                return;
+
+            }
+
+
+            finished = true;
+
+
+            if (code !== 0) {
+
+                console.error(
+                    "yt-dlp erreur :",
+                    errorOutput
                 );
 
-            } else {
 
-                res.destroy();
+                cleanup();
+
+
+                return res.status(500).json({
+
+                    success: false,
+
+                    message:
+                        "Le téléchargement a échoué. Vérifiez que le lien est public, accessible et que vous êtes autorisé à télécharger ce contenu."
+
+                });
+
             }
+
+
+            let files;
+
+
+            try {
+
+                files =
+                    fs.readdirSync(
+                        tempFolder
+                    );
+
+            } catch {
+
+                cleanup();
+
+                return res.status(500).json({
+
+                    success: false,
+
+                    message:
+                        "Le fichier téléchargé est introuvable."
+
+                });
+
+            }
+
+
+            const downloadedFile =
+                files.find(
+                    (file) => {
+
+                        const lower =
+                            file.toLowerCase();
+
+                        if (format === "mp3") {
+
+                            return lower.endsWith(
+                                ".mp3"
+                            );
+
+                        }
+
+                        return (
+                            lower.endsWith(".mp4") ||
+                            lower.endsWith(".webm") ||
+                            lower.endsWith(".mkv")
+                        );
+
+                    }
+                );
+
+
+            if (!downloadedFile) {
+
+                cleanup();
+
+                return res.status(500).json({
+
+                    success: false,
+
+                    message:
+                        "Aucun fichier final n'a été créé."
+
+                });
+
+            }
+
+
+            const filePath =
+                path.join(
+                    tempFolder,
+                    downloadedFile
+                );
+
+
+            const safeName =
+                sanitizeFilename(
+                    downloadedFile
+                );
+
+
+            res.download(
+                filePath,
+                safeName,
+                (error) => {
+
+                    cleanup();
+
+
+                    if (error) {
+
+                        console.error(
+                            "Erreur envoi fichier :",
+                            error.message
+                        );
+
+                    }
+
+                }
+            );
+
         }
-    }
-);
+    );
 
-// ======================================================
-// ROUTE 404 API
-// ======================================================
 
-app.use(
-    "/api",
-    (req, res) => {
+    req.on(
+        "close",
+        () => {
 
-        res.status(404).json({
-            success: false,
-            message:
-                "Route API introuvable."
-        });
-    }
-);
+            if (!res.writableEnded) {
 
-// ======================================================
-// DÉMARRAGE
-// ======================================================
+                try {
+
+                    processYtDlp.kill();
+
+                } catch {}
+
+            }
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   DEMARRAGE
+===================================================== */
 
 app.listen(
     PORT,
-    HOST,
+    "0.0.0.0",
     () => {
 
         console.log(
-            `VideoHub fonctionne sur le port ${PORT}`
+            `ToolHub fonctionne sur le port ${PORT}`
         );
 
         console.log(
-            `Adresse locale : http://localhost:${PORT}`
+            `http://localhost:${PORT}`
         );
+
     }
 );
-
