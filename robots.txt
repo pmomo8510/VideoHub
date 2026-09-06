@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://https://videohub-nal7.onrender.com/sitemap.xml
+Sitemap: https://videohub-nal7.onrender.com/sitemap.xml

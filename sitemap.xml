@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<urlset
-    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    <url>
-        <loc>https://https://videohub-nal7.onrender.com/</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://videohub-nal7.onrender.com/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/video/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/image/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/pdf/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/qr-code/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/text/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/calculators/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/faq/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/supported-sites/</loc></url>
+  <url><loc>https://videohub-nal7.onrender.com/blog/</loc></url>
 </urlset>
