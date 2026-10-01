@@ -9,6 +9,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: "1mb" }));
+
+
+/* =====================================================
+   SEO : ROBOTS.TXT + SITEMAP.XML
+===================================================== */
+
+app.get("/robots.txt", (req, res) => {
+
+    const robotsPath = path.join(__dirname, "robots.txt");
+
+    res
+        .type("text/plain")
+        .set("Cache-Control", "no-cache, no-store, must-revalidate")
+        .sendFile(robotsPath);
+
+});
+
+
+app.get("/sitemap.xml", (req, res) => {
+
+    const sitemapPath = path.join(__dirname, "sitemap.xml");
+
+    res
+        .type("application/xml")
+        .set("Cache-Control", "no-cache, no-store, must-revalidate")
+        .sendFile(sitemapPath);
+
+});
+
+
 app.use(express.static(__dirname));
 
 
