@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /api/
+Disallow: /account/
+
 Sitemap: https://videohub-nal7.onrender.com/sitemap.xml
